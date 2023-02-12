@@ -1,29 +1,29 @@
-import { GetServerSideProps, InferGetStaticPropsType } from 'next';
-import { Header } from '../components/header';
+import { GetServerSideProps, InferGetStaticPropsType } from 'next'
+import { Header } from '../components/header'
 import {
   Button,
   ButtonColor,
-  ButtonSize,
-} from '@smartive-education/thierry-simon-mumble';
+  ButtonSize
+} from '@smartive-education/thierry-simon-mumble'
 
-type PageProps = {};
+type PageProps = {}
 
 export default function PageHome({}: PageProps): InferGetStaticPropsType<
   typeof getServerSideProps
 > {
   return (
     <>
-      <Header title='Mumble'>
+      <Header title="Mumble">
         <span>Your custom network</span>
       </Header>
       <Button
         size={ButtonSize.large}
         color={ButtonColor.gradiant}
-        label='Hello'
+        label="Hello"
       />
     </>
-  );
+  )
 }
 export const getServerSideProps: GetServerSideProps = async () => ({
-  props: { posts: require('../data/posts.json') },
-});
+  props: { posts: require('../data/posts.json') }
+})
