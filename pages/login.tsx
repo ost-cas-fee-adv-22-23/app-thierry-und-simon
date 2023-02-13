@@ -1,8 +1,8 @@
-import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
+import { signIn, signOut, useSession } from 'next-auth/react'
+import Head from 'next/head'
 
 export default function Home() {
-  const { data: session } = useSession();
+  const { data: session } = useSession()
 
   return (
     <>
@@ -20,12 +20,12 @@ export default function Home() {
         )}
 
         {!session && (
-          <a href="#" onClick={() => signIn("zitadel")}>
+          <a href="#" onClick={() => signIn('zitadel')}>
             <h2>Login &rarr;</h2>
             <p>Login with a ZITADEL account</p>
           </a>
         )}
       </main>
     </>
-  );
+  )
 }
