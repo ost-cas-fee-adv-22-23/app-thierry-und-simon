@@ -5,22 +5,27 @@ import {
   ButtonColor,
   ButtonSize
 } from '@smartive-education/thierry-simon-mumble'
+import { Cards } from '../components/cards'
 
-type PageProps = {}
+type PageProps = {
+  posts: any
+}
 
-export default function PageHome({}: PageProps): InferGetStaticPropsType<
+export default function PageHome({posts}: PageProps): InferGetStaticPropsType<
   typeof getServerSideProps
 > {
+  console.log(posts)
   return (
     <>
       <Header title="Mumble">
         <span>Your custom network</span>
       </Header>
-      <Button
+      {/* <Button
         size={ButtonSize.large}
         color={ButtonColor.gradiant}
         label="Hello"
-      />
+      /> */}
+      <Cards title="piss" posts={posts}/>
     </>
   )
 }
