@@ -14,8 +14,8 @@ export default function Home() {
       <main>
         {!!session && (
           <a href="#" onClick={() => signOut()}>
-            <h2>Logout &rarr;</h2>
-            <p>Logout from your account</p>
+            <h2 className="font-medium">Logout &rarr;</h2>
+            <p className="font-medium">Logout from your account</p>
           </a>
         )}
 

@@ -11,6 +11,7 @@
     "prettier:check": "prettier --check ."
   },
   "dependencies": {
+    "@next/font": "^13.1.6",
     "@smartive-education/thierry-simon-mumble": "^1.13.6",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
