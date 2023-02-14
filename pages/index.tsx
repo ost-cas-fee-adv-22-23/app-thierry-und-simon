@@ -21,12 +21,12 @@ export default function PageHome({
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
-        <div className="mb-xs">
+        <div className="mb-xs text-violet-600">
           <Header type={HeaderType.h1} style={HeaderType.h1}>
             Willkommen auf Mumble
           </Header>
         </div>
-        <div className="mb-l">
+        <div className="mb-l text-slate-500">
           <Header type={HeaderType.h2} style={HeaderType.h4}>
             Voluptatem qui cumque voluptatem quia tempora dolores distinctio vel
             repellat dicta.
