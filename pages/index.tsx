@@ -3,6 +3,7 @@ import { GetServerSideProps, InferGetStaticPropsType } from 'next'
 import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
+import { fetchMumbles } from '../services/qwacker'
 
 type PostProps = {
   id: string
@@ -16,7 +17,7 @@ type PostProps = {
   replyCount: number
 }
 
-export default function PageHome({ posts }: { posts: PostProps[] }) {
+export default function PageHome({ mumbles }: { mumbles: PostProps[] }) {
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -33,19 +34,34 @@ export default function PageHome({ posts }: { posts: PostProps[] }) {
         </div>
 
         <WritePost />
-        <Cards posts={posts} />
+        <Cards posts={mumbles} />
       </div>
     </>
   )
 }
 export const getServerSideProps = async () => {
-  const res = await fetch(
-    'https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/posts'
-  )
-  const posts: PostProps[] = await res.json()
-  return {
-    props: {
-      posts: posts
+  try {
+    const { count, mumbles } = await fetchMumbles({ limit: 100 })
+
+    return { props: { count, mumbles } }
+  } catch (error) {
+    let message
+    if (error instanceof Error) {
+      message = error.message
+    } else {
+      message = String(error)
     }
+
+    return { props: { error: message, mumbles: [], count: 0 } }
   }
+
+  // const res = await fetch(
+  //   'https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/posts'
+  // )
+  // const posts: PostProps[] = await res.json()
+  // return {
+  //   props: {
+  //     posts: posts
+  //   }
+  // }
 }
