@@ -1,6 +1,5 @@
 import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
-import { useState } from 'react'
 import { Poppins } from '@next/font/google'
 import '../styles/globals.css'
 

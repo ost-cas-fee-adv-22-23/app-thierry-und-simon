@@ -1,12 +1,6 @@
 import { GetServerSideProps, InferGetStaticPropsType } from 'next'
 
-import {
-  Button,
-  ButtonColor,
-  ButtonSize,
-  Header,
-  HeaderType
-} from '@smartive-education/thierry-simon-mumble'
+import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 
