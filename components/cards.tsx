@@ -22,7 +22,7 @@ type CardsProps = {
 export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
   return (
     <>
-      {posts.data.map((post: any, index: number) => {
+      {posts.map((post: any, index: number) => {
         console.log(post.creator.avatarUrl)
         return (
           <div className="mb-s" key={index}>
