@@ -12,26 +12,26 @@ type Props = {
   }
 }
 
-export default function ProfilePage({ profile }) {
-  console.log(profile)
-
+export default function ProfilePage({ user }) {
   return (
     <Layout>
-      <Profile />
+      <Profile user={user} />
     </Layout>
   )
 }
 
-export const getServerSideProps = async ({ req, res }) => {
+export const getServerSideProps = async ({ req, res, query }) => {
+  console.log(query)
+
   try {
     // const { count, mumbles } = await fetchProfile()
     const secret = process.env.NEXTAUTH_SECRET
     const token = await getToken({ req, secret })
-    const data = await fetchProfile(token)
+    const id = query.alias
 
-    console.log(data)
-    // return { props: { count, mumbles } }
-    return { props: {} }
+    const user = await fetchProfile(token?.accessToken, id)
+
+    return { props: { user } }
   } catch (error) {
     let message
     if (error instanceof Error) {

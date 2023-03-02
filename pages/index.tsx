@@ -3,7 +3,9 @@ import { GetServerSideProps, InferGetStaticPropsType } from 'next'
 import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
-import { fetchMumbles } from '../services/qwacker'
+import { fetchMumbles, fetchProfile } from '../services/qwacker'
+import { IndexKind } from 'typescript'
+import { getToken } from 'next-auth/jwt'
 
 type PostProps = {
   id: string
@@ -18,6 +20,7 @@ type PostProps = {
 }
 
 export default function PageHome({ mumbles }: { mumbles: PostProps[] }) {
+  console.log(mumbles)
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -39,11 +42,21 @@ export default function PageHome({ mumbles }: { mumbles: PostProps[] }) {
     </>
   )
 }
-export const getServerSideProps = async () => {
+export const getServerSideProps = async ({ req, res }) => {
   try {
     const { count, mumbles } = await fetchMumbles({ limit: 100 })
+    const secret = process.env.NEXTAUTH_SECRET
+    const token = await getToken({ req, secret })
 
-    return { props: { count, mumbles } }
+    const mumblesWithUser = await Promise.all(
+      mumbles.map(async (mumble, index) => {
+        const user = await fetchProfile(token?.accessToken, mumble.creator)
+        mumble.user = user
+        return mumble
+      })
+    )
+
+    return { props: { count, mumbles: mumblesWithUser } }
   } catch (error) {
     let message
     if (error instanceof Error) {

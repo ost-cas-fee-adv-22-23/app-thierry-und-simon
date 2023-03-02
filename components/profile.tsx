@@ -7,8 +7,10 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
 
-export default function Profile() {
+export default function Profile({ user }) {
   const { data: session } = useSession()
+
+  console.log({ user })
 
   console.log(session)
 
@@ -22,16 +24,13 @@ export default function Profile() {
           />
         </div>
         <div className="absolute -bottom-xxl right-l">
-          <UserImage
-            type={UserImageSizeType.XL}
-            imgSrc={session?.user.avatarUrl}
-          />
+          <UserImage type={UserImageSizeType.XL} imgSrc={user.avatarUrl} />
         </div>
       </div>
       <User
         type={SizeType.XL}
-        fullName={`${session?.user.firstname} ${session?.user.lastname}`}
-        userName={session?.user.username}
+        fullName={`${user.firstName} ${user.lastName}`}
+        userName={user.userName}
         hometown="Zürich"
         datePosted={new Date('2021-08-12').getTime()}
         dateJoined={new Date('2020-02-12').getTime()}
