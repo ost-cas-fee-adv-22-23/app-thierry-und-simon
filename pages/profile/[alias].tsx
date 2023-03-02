@@ -4,6 +4,7 @@ import Profile from '../../components/profile'
 import { fetchProfile } from '../../services/qwacker'
 import getServerSession from 'next-auth/next'
 import { authOptions } from '../api/auth/[...nextauth]'
+import { getToken } from 'next-auth/jwt'
 
 type Props = {
   profile: {
@@ -16,18 +17,17 @@ export default function ProfilePage({ profile }) {
 
   return (
     <Layout>
-      {/* <h1>{profile.alias}</h1> */}
       <Profile />
     </Layout>
   )
 }
 
-export const getServerSideProps = async (context) => {
-  const session = await getServerSession(authOptions)
-
+export const getServerSideProps = async ({ req, res }) => {
   try {
     // const { count, mumbles } = await fetchProfile()
-    const data = await fetchProfile(session)
+    const secret = process.env.NEXTAUTH_SECRET
+    const token = await getToken({ req, secret })
+    const data = await fetchProfile(token)
 
     console.log(data)
     // return { props: { count, mumbles } }
