@@ -94,9 +94,9 @@ const transformMumble = (mumble: RawMumble) => ({
   createdTimestamp: decodeTime(mumble.id)
 })
 
-export const fetchProfile = async (accessToken) => {
-  console.log({ accestoken: accessToken })
-  const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/me`
+export const fetchProfile = async (accessToken, id) => {
+  console.log({ id })
+  const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`
 
   const res = await fetch(url, {
     headers: {
@@ -105,5 +105,5 @@ export const fetchProfile = async (accessToken) => {
     }
   })
 
-  return res
+  return res.json()
 }

@@ -1,13 +1,16 @@
 import {
   SizeType,
+  Toggle,
   User,
   UserImage,
   UserImageSizeType
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
 
-export default function Profile() {
+export default function Profile({ user }) {
   const { data: session } = useSession()
+
+  console.log({ user })
 
   console.log(session)
 
@@ -21,16 +24,13 @@ export default function Profile() {
           />
         </div>
         <div className="absolute -bottom-xxl right-l">
-          <UserImage
-            type={UserImageSizeType.XL}
-            imgSrc="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200"
-          />
+          <UserImage type={UserImageSizeType.XL} imgSrc={user.avatarUrl} />
         </div>
       </div>
       <User
         type={SizeType.XL}
-        fullName="Ruedi Müller"
-        userName="rmueller"
+        fullName={`${user.firstName} ${user.lastName}`}
+        userName={user.userName}
         hometown="Zürich"
         datePosted={new Date('2021-08-12').getTime()}
         dateJoined={new Date('2020-02-12').getTime()}
@@ -40,6 +40,9 @@ export default function Profile() {
         eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
         voluptua.
       </p>
+
+      <div className="my-l"></div>
+      <Toggle />
     </div>
   )
 }

@@ -13,6 +13,7 @@ import {
   Textarea,
   User
 } from '@smartive-education/thierry-simon-mumble'
+import Link from 'next/link'
 import { FC, ReactElement } from 'react'
 
 type CardsProps = {
@@ -23,19 +24,20 @@ export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
   return (
     <>
       {posts.map((post: any, index: number) => {
-        console.log(post.creator.avatarUrl)
         return (
           <div className="mb-s" key={index}>
             <Card
               showProfileImage={true}
               roundedBorders={true}
-              profileImageUrl={post.creator.avatarUrl}
+              profileImageUrl={post.user.avatarUrl}
             >
-              <User
-                type={SizeType.BASE}
-                userName={post.creator.userName}
-                fullName={`${post.creator.firstName} ${post.creator.lastName}`}
-              />
+              <Link href={`/profile/${post.user.id}`}>
+                <User
+                  type={SizeType.BASE}
+                  userName={post.user.userName}
+                  fullName={`${post.user.firstName} ${post.user.lastName}`}
+                />
+              </Link>
 
               <p className="mt-m">{post.text}</p>
               {post.mediaUrl && (
