@@ -1,6 +1,7 @@
-import NextAuth from 'next-auth'
+import NextAuth, { NextAuthOptions, User } from 'next-auth'
+import { UserType } from '../../../Types/User'
 
-const authOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     {
       id: 'zitadel',
@@ -66,7 +67,7 @@ const authOptions = {
       return token
     },
     async session({ session, token }) {
-      session.user = token.user
+      session.user = token.user as User
       session.accessToken = token.accessToken
       return session
     }

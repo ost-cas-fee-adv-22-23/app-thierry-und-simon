@@ -1,20 +1,12 @@
 import {
-  Button,
-  ButtonColor,
-  ButtonSize,
   Card,
-  Header,
-  HeaderType,
-  Icon,
-  IconType,
   InteractionButton,
   InteractionButtonType,
   SizeType,
-  Textarea,
   User
 } from '@smartive-education/thierry-simon-mumble'
 import Link from 'next/link'
-import { FC, ReactElement } from 'react'
+import { FC } from 'react'
 
 type CardsProps = {
   posts: any
