@@ -1,17 +1,5 @@
 import { decodeTime } from 'ulid'
-
-export type Mumble = {
-  id: string
-  creator: string
-  text: string
-  mediaUrl: string
-  mediaType: string
-  likeCount: number
-  likedByUser: boolean
-  type: string
-  replyCount: number
-  createdTimestamp: number
-}
+import { Mumble } from '../Types/Mumble'
 
 type RawMumble = Omit<Mumble, 'createdTimestamp'>
 
@@ -94,8 +82,7 @@ const transformMumble = (mumble: RawMumble) => ({
   createdTimestamp: decodeTime(mumble.id)
 })
 
-export const fetchProfile = async (accessToken, id) => {
-  console.log({ id })
+export const fetchProfile = async (accessToken: string, id: string) => {
   const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`
 
   const res = await fetch(url, {

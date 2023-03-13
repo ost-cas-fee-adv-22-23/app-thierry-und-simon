@@ -1,26 +1,12 @@
-import { GetServerSideProps, InferGetStaticPropsType } from 'next'
-
+import { GetServerSideProps } from 'next'
 import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 import { fetchMumbles, fetchProfile } from '../services/qwacker'
-import { IndexKind } from 'typescript'
 import { getToken } from 'next-auth/jwt'
+import { Mumble } from '../Types/Mumble'
 
-type PostProps = {
-  id: string
-  creator: string
-  text: string
-  mediaUrl: string
-  mediaType: string
-  likeCount: number
-  likedByUser: boolean
-  type: string
-  replyCount: number
-}
-
-export default function PageHome({ mumbles }: { mumbles: PostProps[] }) {
-  console.log(mumbles)
+export default function PageHome({ mumbles }: { mumbles: Mumble[] }) {
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -35,28 +21,29 @@ export default function PageHome({ mumbles }: { mumbles: PostProps[] }) {
             repellat dicta.
           </Header>
         </div>
-
         <WritePost />
         <Cards posts={mumbles} />
       </div>
     </>
   )
 }
-export const getServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   try {
     const { count, mumbles } = await fetchMumbles({ limit: 100 })
-    const secret = process.env.NEXTAUTH_SECRET
-    const token = await getToken({ req, secret })
+    const token = await getToken({ req })
 
     const mumblesWithUser = await Promise.all(
-      mumbles.map(async (mumble, index) => {
-        const user = await fetchProfile(token?.accessToken, mumble.creator)
+      mumbles.map(async (mumble) => {
+        const user = await fetchProfile(
+          token?.accessToken as string,
+          mumble.creator
+        )
         mumble.user = user
         return mumble
       })
     )
 
-    return { props: { count, mumbles: mumblesWithUser } }
+    return { props: { count, mumbles: token ? mumblesWithUser : mumbles } }
   } catch (error) {
     let message
     if (error instanceof Error) {
@@ -67,14 +54,4 @@ export const getServerSideProps = async ({ req, res }) => {
 
     return { props: { error: message, mumbles: [], count: 0 } }
   }
-
-  // const res = await fetch(
-  //   'https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/posts'
-  // )
-  // const posts: PostProps[] = await res.json()
-  // return {
-  //   props: {
-  //     posts: posts
-  //   }
-  // }
 }
