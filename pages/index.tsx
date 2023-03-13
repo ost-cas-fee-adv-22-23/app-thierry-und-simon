@@ -47,6 +47,7 @@ export const getServerSideProps = async ({ req, res }) => {
     const { count, mumbles } = await fetchMumbles({ limit: 100 })
     const secret = process.env.NEXTAUTH_SECRET
     const token = await getToken({ req, secret })
+    console.log({ token })
 
     const mumblesWithUser = await Promise.all(
       mumbles.map(async (mumble, index) => {
