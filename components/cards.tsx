@@ -16,6 +16,7 @@ export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
   return (
     <>
       {posts.map((post: any, index: number) => {
+        console.log(post)
         return (
           <div className="mb-s" key={index}>
             <Card
