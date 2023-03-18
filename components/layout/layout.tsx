@@ -15,10 +15,10 @@ type LayoutProps = {
 export const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <>
-      <main className={`${poppins.className} max-w-3xl mx-auto`}>
+      <Navigation />
+      <main className={`${poppins.className} max-w-3xl mx-auto pt-12`}>
         {children}
       </main>
-      <Navigation />
     </>
   )
 }
