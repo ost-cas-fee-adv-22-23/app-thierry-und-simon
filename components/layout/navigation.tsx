@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import { IconType, NaviButton } from '@smartive-education/thierry-simon-mumble'
 
 export const Navigation = () => {
@@ -13,7 +14,14 @@ export const Navigation = () => {
             {session && (
               <>
                 <li>
-                  <div className="rounded-full bg-purple-700 h-10 w-10"></div>
+                  <div className="rounded-full bg-purple-700 h-10 w-10">
+                    {session?.user?.image && (
+                      <Image
+                        src={session?.user?.image}
+                        alt={session?.user?.name || 'User'}
+                      />
+                    )}
+                  </div>
                 </li>
                 <li>
                   <NaviButton text="Settings" icon={IconType.profile} />
