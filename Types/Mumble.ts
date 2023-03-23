@@ -1,6 +1,6 @@
 import { UserType } from './User'
 
-export type Mumble = {
+export type MumbleType = {
   id: string
   creator: string
   text: string
