@@ -29,7 +29,7 @@ export const WritePost: FC = () => {
               label="Bild hochladen"
             >
               <span className="ml-xs">
-                <Icon type={IconType.upload} color="white" />
+                <Icon type={IconType.upload} />
               </span>
             </Button>
           </div>
@@ -40,7 +40,7 @@ export const WritePost: FC = () => {
             label="Absenden"
           >
             <span className="ml-xs">
-              <Icon type={IconType.send} color="white" />
+              <Icon type={IconType.send} />
             </span>
           </Button>
         </div>
