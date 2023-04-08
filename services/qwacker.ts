@@ -77,6 +77,7 @@ export const postMumble = async (
     )
   }
 }
+
 const transformMumble = (mumble: RawMumble) => ({
   ...mumble,
   createdTimestamp: decodeTime(mumble.id)
