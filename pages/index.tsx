@@ -5,6 +5,7 @@ import { WritePost } from '../components/writePost'
 import { fetchMumbles, fetchProfile } from '../services/qwacker'
 import { getToken } from 'next-auth/jwt'
 import { Mumble } from '../Types/Mumble'
+import { UserType } from '../Types/User'
 
 export default function PageHome({ mumbles }: { mumbles: Mumble[] }) {
   return (
