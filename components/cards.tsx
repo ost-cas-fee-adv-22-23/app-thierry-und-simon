@@ -32,7 +32,9 @@ export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
                 />
               </Link>
 
-              <p className="mt-m">{post.text}</p>
+              <Link href={`/mumble/${post.id}`}>
+                <p className="mt-m">{post.text}</p>
+              </Link>
               {post.mediaUrl && (
                 <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
                   <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">

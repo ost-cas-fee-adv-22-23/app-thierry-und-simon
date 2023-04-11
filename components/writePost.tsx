@@ -83,7 +83,7 @@ export const WritePost: FC = () => {
               onClick={() => setModalOpen(true)}
             >
               <span className="ml-xs">
-                <Icon type={IconType.upload} color="white" />
+                <Icon type={IconType.upload} />
               </span>
             </Button>
           </div>
@@ -95,7 +95,7 @@ export const WritePost: FC = () => {
             onClick={() => handleSubmit()}
           >
             <span className="ml-xs">
-              <Icon type={IconType.send} color="white" />
+              <Icon type={IconType.send} />
             </span>
           </Button>
         </div>

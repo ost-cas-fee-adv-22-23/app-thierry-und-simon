@@ -1,5 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import Layout from '../../components/layout'
+import Layout from '../../components/layout/layout'
 import Profile from '../../components/profile'
 import { fetchProfile } from '../../services/qwacker'
 import getServerSession from 'next-auth/next'
