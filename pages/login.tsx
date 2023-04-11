@@ -7,6 +7,7 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
+import Link from 'next/link'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -25,20 +26,34 @@ export default function Home() {
             Anmelden
           </Header>
           {!!session && (
-            <a href="#" onClick={() => signOut()}>
+            <a
+              href="#"
+              onClick={() =>
+                signOut({
+                  callbackUrl: '/'
+                })
+              }
+            >
               <h2 className="font-medium">Logout &rarr;</h2>
               <p className="font-medium">Logout from your account</p>
             </a>
           )}
 
           {!session && (
-            <a href="#" onClick={() => signIn('zitadel')}>
+            <Link
+              href="/"
+              onClick={() =>
+                signIn('zitadel', {
+                  callbackUrl: '/'
+                })
+              }
+            >
               <Button
                 size={ButtonSize.large}
                 color={ButtonColor.gradiant}
                 label="Let's Mumble"
               />
-            </a>
+            </Link>
           )}
         </section>
       </main>
