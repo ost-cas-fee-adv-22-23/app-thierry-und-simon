@@ -5,13 +5,19 @@ import { Layout } from '../components/layout/layout'
 
 export default function App({
   Component,
-  pageProps: { session, ...pageProps }
+  pageProps: { session, ...pageProps },
+  ...appProps
 }: AppProps) {
-  return (
-    <SessionProvider session={session}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </SessionProvider>
-  )
+  const getLayout = () => {
+    if ([`/login`].includes(appProps.router.pathname)) {
+      return <Component {...pageProps} />
+    } else {
+      return (
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      )
+    }
+  }
+  return <SessionProvider session={session}>{getLayout()}</SessionProvider>
 }

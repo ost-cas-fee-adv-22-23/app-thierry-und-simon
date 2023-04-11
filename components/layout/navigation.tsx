@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { IconType, NaviButton } from '@smartive-education/thierry-simon-mumble'
 
 export const Navigation = () => {
@@ -27,13 +28,17 @@ export const Navigation = () => {
                   <NaviButton text="Settings" icon={IconType.profile} />
                 </li>
                 <li>
-                  <NaviButton text="Logout" icon={IconType.logout} />
+                  <Link href="/login">
+                    <NaviButton text="Logout" icon={IconType.logout} />
+                  </Link>
                 </li>
               </>
             )}
             {!session && (
               <li>
-                <NaviButton text="Login" icon={IconType.mumble} />
+                <Link href="/login">
+                  <NaviButton text="Login" icon={IconType.mumble} />
+                </Link>
               </li>
             )}
           </ul>
