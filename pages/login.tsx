@@ -5,7 +5,9 @@ import {
   Header,
   HeaderType,
   Icon,
-  IconType
+  IconType,
+  Label,
+  LabelType
 } from '@smartive-education/thierry-simon-mumble'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
@@ -30,7 +32,7 @@ export default function Home() {
             titel="find out what's new in"
           />
         </section>
-        <section className="flex-1 flex flex-col justify-center items-center">
+        <section className="flex-1 flex flex-col justify-center items-center gap-10">
           <Header style={HeaderType.h1} type={HeaderType.h1}>
             Anmelden
           </Header>
@@ -64,6 +66,12 @@ export default function Home() {
               />
             </Link>
           )}
+          <Label type={LabelType.M}>
+            Noch nicht registriert?{' '}
+            <Link href="/register" className="text-violet-600 underline">
+              Jetzt registrieren
+            </Link>
+          </Label>
         </section>
       </main>
     </>
