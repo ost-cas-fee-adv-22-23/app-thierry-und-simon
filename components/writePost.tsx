@@ -17,8 +17,6 @@ import { FC, useReducer } from 'react'
 import { postMumble } from '../services/qwacker'
 
 const reducer = function (state, action) {
-  console.log('reducer')
-  console.log(action)
   switch (action.type) {
     case 'modal_open': {
       return {
@@ -86,9 +84,8 @@ export const WritePost: FC = () => {
 
   const handleSubmit = async () => {
     dispatch({ type: 'validate_input' })
-    console.log(state)
+
     if (!state.hasError) {
-      console.log('send mumble')
       const res = await postMumble(
         state.text,
         state.file,
