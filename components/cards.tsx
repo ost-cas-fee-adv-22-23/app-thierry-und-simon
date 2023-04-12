@@ -22,13 +22,13 @@ export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
             <Card
               showProfileImage={true}
               roundedBorders={true}
-              profileImageUrl={post.user.avatarUrl}
+              profileImageUrl={post.user?.avatarUrl}
             >
-              <Link href={`/profile/${post.user.id}`}>
+              <Link href={`/profile/${post.user?.id}`}>
                 <User
                   type={SizeType.BASE}
-                  userName={post.user.userName}
-                  fullName={`${post.user.firstName} ${post.user.lastName}`}
+                  userName={post.user?.userName}
+                  fullName={`${post.user?.firstName} ${post.user?.lastName}`}
                 />
               </Link>
 
