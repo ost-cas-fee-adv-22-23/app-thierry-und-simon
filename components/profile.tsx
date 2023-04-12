@@ -6,8 +6,9 @@ import {
   UserImageSizeType
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
+import { UserType } from '../Types/User'
 
-export default function Profile({ user }) {
+export default function Profile({ user }: { user: UserType }) {
   const { data: session } = useSession()
 
   console.log({ user })

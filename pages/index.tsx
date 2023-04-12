@@ -4,10 +4,9 @@ import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 import { fetchMumbles, fetchProfile } from '../services/qwacker'
 import { getToken } from 'next-auth/jwt'
-import { Mumble } from '../Types/Mumble'
-import { UserType } from '../Types/User'
+import { MumbleType } from '../Types/Mumble'
 
-export default function PageHome({ mumbles }: { mumbles: Mumble[] }) {
+export default function PageHome({ mumbles }: { mumbles: MumbleType[] }) {
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
