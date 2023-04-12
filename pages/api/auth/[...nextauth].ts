@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions, User } from 'next-auth'
+import NextAuth, { NextAuthOptions } from 'next-auth'
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -65,8 +65,8 @@ const authOptions: NextAuthOptions = {
 
       return token
     },
-    async session({ session, token }) {
-      session.user = token.user as User
+    async session({ session, token }: any) {
+      session.user = token.user
       session.accessToken = token.accessToken
       return session
     }

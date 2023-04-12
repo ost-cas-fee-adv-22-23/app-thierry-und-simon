@@ -1,7 +1,7 @@
 import { decodeTime } from 'ulid'
-import { Mumble } from '../Types/Mumble'
+import { MumbleType } from '../Types/Mumble'
 
-type RawMumble = Omit<Mumble, 'createdTimestamp'>
+type RawMumble = Omit<MumbleType, 'createdTimestamp'>
 
 type QwackerMumbleResponse = {
   count: number
@@ -88,10 +88,11 @@ export const fetchProfile = async (accessToken: string, id: string) => {
 
   const res = await fetch(url, {
     headers: {
+      'Access-Control-Allow-Origin': '*',
       'content-type': 'application/json',
       Authorization: `Bearer ${accessToken}`
     }
   })
-
-  return res.json()
+  const user = await res.json()
+  return user
 }
