@@ -30,7 +30,7 @@ export default function PageHome({ mumbles }: { mumbles: Mumble[] }) {
 }
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   try {
-    const { count, mumbles } = await fetchMumbles({ limit: 100 })
+    const { count, mumbles } = await fetchMumbles({ limit: 10 })
     const token = await getToken({ req })
 
     const mumblesWithUser = await Promise.all(
