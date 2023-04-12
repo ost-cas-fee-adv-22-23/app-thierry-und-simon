@@ -41,6 +41,7 @@ export const WritePost: FC = () => {
 
     if (text !== '' || file !== undefined) {
       const res = await postMumble(text, file, session?.accessToken)
+      return res
     }
   }
 

@@ -1,5 +1,4 @@
 import NextAuth, { NextAuthOptions, User } from 'next-auth'
-import { UserType } from '../../../Types/User'
 
 const authOptions: NextAuthOptions = {
   providers: [
