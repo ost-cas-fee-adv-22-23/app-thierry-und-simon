@@ -46,7 +46,7 @@ export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
                 </div>
               )}
 
-              <div className="flex">
+              <div className="flex mt-s">
                 <div>
                   <InteractionButton
                     type={InteractionButtonType.comment}

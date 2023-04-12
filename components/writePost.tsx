@@ -13,7 +13,7 @@ import {
   Textarea
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
-import { FC, useEffect, useReducer, useState } from 'react'
+import { FC, useReducer } from 'react'
 import { postMumble } from '../services/qwacker'
 
 const reducer = function (state, action) {
@@ -35,7 +35,7 @@ const reducer = function (state, action) {
     case 'change_text': {
       return {
         ...state,
-        text: action.inputText,
+        text: action.inputText.trim(),
         hasError: false
       }
     }
@@ -74,6 +74,8 @@ const reducer = function (state, action) {
 }
 
 export const WritePost: FC = () => {
+  const session = useSession()
+
   const [state, dispatch] = useReducer(reducer, {
     modalIsOpen: false,
     file: null,
@@ -84,16 +86,25 @@ export const WritePost: FC = () => {
 
   const handleSubmit = async () => {
     dispatch({ type: 'validate_input' })
-
+    console.log(state)
     if (!state.hasError) {
       console.log('send mumble')
-      //const res = await postMumble(text, file, session?.accessToken)
+      const res = await postMumble(
+        state.text,
+        state.file,
+        session?.data?.accessToken
+      )
+      console.log(res)
     }
   }
 
   return (
     <div className="mb-s">
-      <Card showProfileImage={true} roundedBorders={true} profileImageUrl="">
+      <Card
+        showProfileImage={true}
+        roundedBorders={true}
+        profileImageUrl={session?.data?.user.avatarUrl}
+      >
         <div className="mb-s">
           <Header type={HeaderType.h4} style={HeaderType.h4}>
             Hey, was läuft?
