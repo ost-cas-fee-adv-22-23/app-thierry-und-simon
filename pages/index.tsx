@@ -1,12 +1,22 @@
 import { GetServerSideProps } from 'next'
+import { getToken } from 'next-auth/jwt'
+import { useQuery } from '@tanstack/react-query'
 import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
-import { fetchMumbles, fetchProfile } from '../services/qwacker'
 import { MumbleType } from '../Types/Mumble'
-import { getToken } from 'next-auth/jwt'
+import { fetchMumblesWithUser } from '../services/postsService'
+import { useSession } from 'next-auth/react'
 
 export default function PageHome({ mumbles }: { mumbles: MumbleType[] }) {
+  const { data: session }: any = useSession()
+
+  const { data } = useQuery({
+    queryKey: ['mumbles', session?.accessToken],
+    queryFn: () => fetchMumblesWithUser(session?.accessToken),
+    initialData: { mumbles, count: mumbles?.length }
+  })
+
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -22,36 +32,20 @@ export default function PageHome({ mumbles }: { mumbles: MumbleType[] }) {
           </Header>
         </div>
         <WritePost />
-        <Cards posts={mumbles} />
+        <p>{data?.count}</p>
+        <Cards posts={data?.mumbles} />
       </div>
     </>
   )
 }
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  try {
-    const { count, mumbles } = await fetchMumbles({ limit: 100 })
-    const token = await getToken({ req })
+  const token = await getToken({ req })
+  const data = await fetchMumblesWithUser(token?.accessToken as string)
 
-    const mumblesWithUser = await Promise.all(
-      mumbles.map(async (mumble) => {
-        const user = await fetchProfile(
-          token?.accessToken as string,
-          mumble.creator
-        )
-        mumble.user = user
-        return mumble
-      })
-    )
-
-    return { props: { count, mumbles: token ? mumblesWithUser : mumbles } }
-  } catch (error) {
-    let message
-    if (error instanceof Error) {
-      message = error.message
-    } else {
-      message = String(error)
+  return {
+    props: {
+      mumbles: data?.mumbles,
+      count: data?.count
     }
-
-    return { props: { error: message, mumbles: [], count: 0 } }
   }
 }

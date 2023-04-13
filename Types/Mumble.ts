@@ -13,3 +13,10 @@ export type MumbleType = {
   createdTimestamp: number
   user?: UserType
 }
+
+export type RawMumble = Omit<MumbleType, 'createdTimestamp'>
+
+export type QwackerMumbleResponse = {
+  count: number
+  data: RawMumble[]
+}
