@@ -96,3 +96,57 @@ export const fetchProfile = async (accessToken: string, id: string) => {
   const user = await res.json()
   return user
 }
+
+export const likeMumble = async (accessToken: string, mumbleId: string) => {
+  if (!accessToken) {
+    throw new Error('No access token')
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${mumbleId}/likes`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Something was not okay')
+    }
+    return response
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : 'Could not post mumble'
+    )
+  }
+}
+
+export const unLikeMumble = async (accessToken: string, mumbleId: string) => {
+  if (!accessToken) {
+    throw new Error('No access token')
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${mumbleId}/likes`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Something was not okay')
+    }
+    return response
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : 'Could not post mumble'
+    )
+  }
+}
