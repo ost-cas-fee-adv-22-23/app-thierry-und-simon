@@ -10,21 +10,30 @@ import Image from 'next/image'
 import { MumbleType } from '../Types/Mumble'
 import { UserType } from '../Types/User'
 import { useSession } from 'next-auth/react'
-import { fetchProfile } from '../services/qwacker'
+import { fetchProfile, likeMumble } from '../services/qwacker'
 import { useEffect, useState } from 'react'
+import { InteractionButtons } from './interactionButtons'
 
 export const MumbleCard = (post: MumbleType) => {
   const { data: session }: any = useSession()
   const [user, setUser] = useState<UserType | null>(null)
 
+  // useEffect(() => {
+  //   if (!session) return
+  //   const fetchCreater = async () => {
+  //     //const creater = await fetchProfile(session?.accessToken, post.creator)
+  //     //setUser(creater)
+  //   }
+  //   fetchCreater()
+  // }, [post.creator, session])
+
   useEffect(() => {
-    if (!session) return
-    const fetchCreater = async () => {
-      const creater = await fetchProfile(session?.accessToken, post.creator)
-      setUser(creater)
-    }
-    fetchCreater()
-  }, [post.creator, session])
+    fetch(`/api/profile/${post.creator}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data.user)
+      })
+  }, [post.creator])
 
   return (
     <div className="mb-s" key={post.id}>
@@ -59,23 +68,7 @@ export const MumbleCard = (post: MumbleType) => {
           </div>
         )}
 
-        <div className="flex">
-          <div>
-            <InteractionButton
-              type={InteractionButtonType.comment}
-              count={post.replyCount}
-            />
-          </div>
-          <div className="ml-xl">
-            <InteractionButton
-              type={InteractionButtonType.like}
-              count={post.likeCount}
-            />
-          </div>
-          <div className="ml-xl">
-            <InteractionButton type={InteractionButtonType.share} count={0} />
-          </div>
-        </div>
+        <InteractionButtons post={post} />
       </Card>
     </div>
   )
