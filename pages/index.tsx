@@ -29,7 +29,6 @@ export default function PageHome({ mumbles }: { mumbles: MumbleType[] }) {
 export const getStaticProps: GetStaticProps = async () => {
   try {
     const { count, mumbles } = await fetchMumbles({ limit: 100 })
-
     return { props: { count, mumbles }, revalidate: 60 }
   } catch (error) {
     let message

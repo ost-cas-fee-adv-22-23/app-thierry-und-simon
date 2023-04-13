@@ -13,41 +13,95 @@ import {
   Textarea
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useReducer } from 'react'
 import { postMumble } from '../services/qwacker'
 
-export const WritePost: FC = () => {
-  const [text, setText] = useState('')
-  const [file, setFile] = useState()
-  const [modalIsOpen, setModalOpen] = useState(false)
-  const { data: session } = useSession()
-  console.log(session)
+const reducer = function (state, action) {
+  switch (action.type) {
+    case 'modal_open': {
+      return {
+        ...state,
+        modalIsOpen: true
+      }
+    }
+    case 'modal_close': {
+      return {
+        ...state,
+        modalIsOpen: false
+      }
+    }
+    case 'change_text': {
+      return {
+        ...state,
+        text: action.inputText.trim(),
+        hasError: false
+      }
+    }
+    case 'change_file': {
+      return {
+        ...state,
+        file: action.inputFile,
+        hasError: false
+      }
+    }
+    case 'cancel_upload': {
+      return {
+        ...state,
+        file: null,
+        modalIsOpen: false
+      }
+    }
+    case 'validate_input': {
+      let hasError = false
+      let errorMessage = ''
 
-  useEffect(() => {
-    console.log(file)
-  }, [file])
+      if (state.text === '' && !state.file) {
+        hasError = true
+        errorMessage = 'Bitte füge ein Bild oder einen Satz hinzu.'
+      }
 
-  useEffect(() => {
-    console.log(text)
-  }, [text])
-
-  const handleCancel = () => {
-    setFile(undefined)
-    setModalOpen(false)
+      return {
+        ...state,
+        hasError,
+        errorMessage
+      }
+    }
+    default:
+      return state
   }
+}
+
+export const WritePost: FC = () => {
+  const session = useSession()
+
+  const [state, dispatch] = useReducer(reducer, {
+    modalIsOpen: false,
+    file: null,
+    text: '',
+    hasError: false,
+    errorMessage: ''
+  })
 
   const handleSubmit = async () => {
-    console.log(session?.accessToken)
+    dispatch({ type: 'validate_input' })
 
-    if (text !== '' || file !== undefined) {
-      const res = await postMumble(text, file, session?.accessToken)
-      return res
-    }
+
+    if (!state.hasError) {
+      const res = await postMumble(
+        state.text,
+        state.file,
+        session?.data?.accessToken
+      )
+      console.log(res)
   }
 
   return (
     <div className="mb-s">
-      <Card showProfileImage={true} roundedBorders={true} profileImageUrl="">
+      <Card
+        showProfileImage={true}
+        roundedBorders={true}
+        profileImageUrl={session?.data?.user.avatarUrl}
+      >
         <div className="mb-s">
           <Header type={HeaderType.h4} style={HeaderType.h4}>
             Hey, was läuft?
@@ -57,31 +111,23 @@ export const WritePost: FC = () => {
           placeholder="Deine Meinung zählt!"
           rows={5}
           onChange={(e) => {
-            setText(e.target.value)
+            dispatch({ type: 'change_text', inputText: e.target.value })
           }}
-          value={text}
+          value={state.text}
         ></Textarea>
-        {/* <input
-          type="text"
-          onChange={(e) => setText(e.target.value)}
-          value={text}
-        />
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          value={undefined}
-        />
-        <button type="submit" onClick={() => handleSubmit()}>
-          submit
-        </button> */}
-        {file && <p>{file.name}</p>}
+
+        {state.file && <p className="pb-s">{state.file.name}</p>}
+        {state.hasError && (
+          <p className="pb-s text-red-400 text-center">{state.errorMessage}</p>
+        )}
+
         <div className="flex mt-xs">
           <div className="mr-s flex grow">
             <Button
               size={ButtonSize.medium}
               color={ButtonColor.slate}
               label="Bild hochladen"
-              onClick={() => setModalOpen(true)}
+              onClick={() => dispatch({ type: 'modal_open' })}
             >
               <span className="ml-xs">
                 <Icon type={IconType.upload} />
@@ -103,15 +149,20 @@ export const WritePost: FC = () => {
       </Card>
 
       <Modal
-        isOpen={modalIsOpen}
-        setIsOpen={setModalOpen}
+        isOpen={state.modalIsOpen}
+        onCloseModal={() => dispatch({ type: 'cancel_upload' })}
         device={ModalDevice.mobile}
         title="Upload Image"
       >
-        {!file ? (
-          <FileUpload file={file} setFile={setFile} />
+        {!state.file ? (
+          <FileUpload
+            file={state.file}
+            setFile={(file) =>
+              dispatch({ type: 'change_file', inputFile: file })
+            }
+          />
         ) : (
-          <p>{file.name}</p>
+          <p>{state.file.name}</p>
         )}
 
         <div className="flex mt-m">
@@ -119,7 +170,7 @@ export const WritePost: FC = () => {
             <Button
               color={ButtonColor.slate}
               size={ButtonSize.medium}
-              onClick={() => handleCancel()}
+              onClick={() => dispatch({ type: 'cancel_upload' })}
             >
               Abbrechen
             </Button>
@@ -128,7 +179,7 @@ export const WritePost: FC = () => {
             <Button
               color={ButtonColor.violet}
               size={ButtonSize.medium}
-              onClick={() => setModalOpen(false)}
+              onClick={() => dispatch({ type: 'modal_close' })}
             >
               Speichern
             </Button>
