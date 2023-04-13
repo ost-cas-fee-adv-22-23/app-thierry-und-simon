@@ -9,7 +9,9 @@ export default function ProfilePage({ user }) {
 
 export const getServerSideProps = async ({ query }) => {
   try {
+    console.log('get server side props')
     const secret = process.env.NEXTAUTH_SECRET
+    console.log('token ' + secret)
     const token = await getToken({ secret })
     console.log('token ' + secret)
     console.log({ token })
