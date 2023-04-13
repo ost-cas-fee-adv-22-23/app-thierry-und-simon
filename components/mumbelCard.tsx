@@ -18,15 +18,22 @@ export const MumbleCard = (post: MumbleType) => {
   const { data: session }: any = useSession()
   const [user, setUser] = useState<UserType | null>(null)
 
-  useEffect(() => {
-    if (!session) return
-    const fetchCreater = async () => {
-      const creater = await fetchProfile(session?.accessToken, post.creator)
+  // useEffect(() => {
+  //   if (!session) return
+  //   const fetchCreater = async () => {
+  //     //const creater = await fetchProfile(session?.accessToken, post.creator)
+  //     //setUser(creater)
+  //   }
+  //   fetchCreater()
+  // }, [post.creator, session])
 
-      setUser(creater)
-    }
-    fetchCreater()
-  }, [post.creator, session])
+  useEffect(() => {
+    fetch(`/api/profile/${post.creator}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data.user)
+      })
+  }, [post.creator])
 
   return (
     <div className="mb-s" key={post.id}>
