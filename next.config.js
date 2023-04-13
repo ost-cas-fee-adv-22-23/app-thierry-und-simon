@@ -4,6 +4,9 @@ const nextConfig = {
   swcMinify: true,
   typescript: {
     ignoreBuildErrors: true,
+  },
+  images: {
+    domains: ['storage.googleapis.com'],
   }
 }
 
