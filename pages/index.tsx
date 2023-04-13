@@ -1,9 +1,10 @@
-import { GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
-import { fetchMumbles } from '../services/qwacker'
+import { fetchMumbles, fetchProfile } from '../services/qwacker'
 import { MumbleType } from '../Types/Mumble'
+import { getToken } from 'next-auth/jwt'
 
 export default function PageHome({ mumbles }: { mumbles: MumbleType[] }) {
   return (
@@ -26,10 +27,23 @@ export default function PageHome({ mumbles }: { mumbles: MumbleType[] }) {
     </>
   )
 }
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   try {
     const { count, mumbles } = await fetchMumbles({ limit: 100 })
-    return { props: { count, mumbles }, revalidate: 60 }
+    const token = await getToken({ req })
+
+    const mumblesWithUser = await Promise.all(
+      mumbles.map(async (mumble) => {
+        const user = await fetchProfile(
+          token?.accessToken as string,
+          mumble.creator
+        )
+        mumble.user = user
+        return mumble
+      })
+    )
+
+    return { props: { count, mumbles: token ? mumblesWithUser : mumbles } }
   } catch (error) {
     let message
     if (error instanceof Error) {
