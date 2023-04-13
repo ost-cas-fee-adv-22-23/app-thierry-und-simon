@@ -85,6 +85,7 @@ export const WritePost: FC = () => {
   const handleSubmit = async () => {
     dispatch({ type: 'validate_input' })
 
+
     if (!state.hasError) {
       const res = await postMumble(
         state.text,
@@ -92,7 +93,6 @@ export const WritePost: FC = () => {
         session?.data?.accessToken
       )
       console.log(res)
-    }
   }
 
   return (

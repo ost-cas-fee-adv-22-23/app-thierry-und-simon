@@ -1,16 +1,7 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import Layout from '../../components/layout/layout'
+import { Layout } from '../../components/layout/layout'
 import Profile from '../../components/profile'
 import { fetchProfile } from '../../services/qwacker'
-import getServerSession from 'next-auth/next'
-import { authOptions } from '../api/auth/[...nextauth]'
 import { getToken } from 'next-auth/jwt'
-
-type Props = {
-  profile: {
-    alias: string
-  }
-}
 
 export default function ProfilePage({ user }) {
   return (
@@ -20,13 +11,13 @@ export default function ProfilePage({ user }) {
   )
 }
 
-export const getServerSideProps = async ({ req, res, query }) => {
+export const getServerSideProps = async ({ query }) => {
   console.log(query)
 
   try {
-    // const { count, mumbles } = await fetchProfile()
+    // const { count, mumbles } = await fetchProfile(
     const secret = process.env.NEXTAUTH_SECRET
-    const token = await getToken({ req, secret })
+    const token = await getToken({ secret })
     const id = query.alias
 
     const user = await fetchProfile(token?.accessToken, id)

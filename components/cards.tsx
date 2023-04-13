@@ -1,74 +1,16 @@
-import {
-  Card,
-  InteractionButton,
-  InteractionButtonType,
-  SizeType,
-  User
-} from '@smartive-education/thierry-simon-mumble'
-import Link from 'next/link'
 import { FC } from 'react'
+import { MumbleType } from '../Types/Mumble'
+import { MumbleCard } from './mumbelCard'
 
 type CardsProps = {
-  posts: any
+  posts: MumbleType[]
 }
 
 export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
   return (
     <>
-      {posts.map((post: any, index: number) => {
-        console.log(post)
-        return (
-          <div className="mb-s" key={index}>
-            <Card
-              showProfileImage={true}
-              roundedBorders={true}
-              profileImageUrl={post.user.avatarUrl}
-            >
-              <Link href={`/profile/${post.user.id}`}>
-                <User
-                  type={SizeType.BASE}
-                  userName={post.user.userName}
-                  fullName={`${post.user.firstName} ${post.user.lastName}`}
-                />
-              </Link>
-
-              <Link href={`/mumble/${post.id}`}>
-                <p className="mt-m">{post.text}</p>
-              </Link>
-              {post.mediaUrl && (
-                <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
-                  <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
-                    <img
-                      className="object-cover w-full h-full"
-                      src={post.mediaUrl}
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="flex mt-s">
-                <div>
-                  <InteractionButton
-                    type={InteractionButtonType.comment}
-                    count={post.replyCount}
-                  />
-                </div>
-                <div className="ml-xl">
-                  <InteractionButton
-                    type={InteractionButtonType.like}
-                    count={post.likeCount}
-                  />
-                </div>
-                <div className="ml-xl">
-                  <InteractionButton
-                    type={InteractionButtonType.share}
-                    count={0}
-                  />
-                </div>
-              </div>
-            </Card>
-          </div>
-        )
+      {posts.map((post: MumbleType) => {
+        return <MumbleCard {...post} key={post.id} />
       })}
     </>
   )

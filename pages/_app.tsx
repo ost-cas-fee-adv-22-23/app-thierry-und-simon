@@ -9,7 +9,7 @@ export default function App({
   ...appProps
 }: AppProps) {
   const getLayout = () => {
-    if ([`/login`].includes(appProps.router.pathname)) {
+    if ([`/login`, `/register`].includes(appProps.router.pathname)) {
       return <Component {...pageProps} />
     } else {
       return (
