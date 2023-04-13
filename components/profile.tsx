@@ -11,13 +11,14 @@ import { UserType } from '../Types/User'
 export default function Profile({ user }: { user: UserType }) {
   const { data: session } = useSession()
 
-  console.log({ user })
+  console.log(user)
 
-  console.log(session)
+  // console.log(session)
 
   return (
     <div>
-      <div className="w-100 pt-16/9 bg-violet-200 rounded-lg relative mb-l ">
+      sali
+      {/* <div className="w-100 pt-16/9 bg-violet-200 rounded-lg relative mb-l ">
         <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
           <img
             className="object-cover w-full h-full"
@@ -25,7 +26,7 @@ export default function Profile({ user }: { user: UserType }) {
           />
         </div>
         <div className="absolute -bottom-xxl right-l">
-          <UserImage type={UserImageSizeType.XL} imgSrc={user.avatarUrl} />
+          <UserImage type={UserImageSizeType.XL} imgSrc={user?.avatarUrl} />
         </div>
       </div>
       <User
@@ -43,7 +44,7 @@ export default function Profile({ user }: { user: UserType }) {
       </p>
 
       <div className="my-l"></div>
-      <Toggle />
+      <Toggle /> */}
     </div>
   )
 }

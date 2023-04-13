@@ -1,26 +1,23 @@
-import { Layout } from '../../components/layout/layout'
 import Profile from '../../components/profile'
 import { fetchProfile } from '../../services/qwacker'
 import { getToken } from 'next-auth/jwt'
 
 export default function ProfilePage({ user }) {
-  return (
-    <Layout>
-      <Profile user={user} />
-    </Layout>
-  )
+  console.log(user)
+  return <Profile user={user} />
 }
 
 export const getServerSideProps = async ({ query }) => {
-  console.log(query)
-
   try {
-    // const { count, mumbles } = await fetchProfile(
+    console.log('get server side props')
     const secret = process.env.NEXTAUTH_SECRET
+    console.log('token ' + secret)
     const token = await getToken({ secret })
-    const id = query.alias
+    console.log('token ' + secret)
+    console.log({ token })
+    const userId = query.alias
 
-    const user = await fetchProfile(token?.accessToken, id)
+    const user = await fetchProfile(token?.accessToken, userId)
 
     return { props: { user } }
   } catch (error) {
