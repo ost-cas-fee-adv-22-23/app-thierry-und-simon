@@ -1,25 +1,41 @@
 import Profile from '../../components/profile'
-import { fetchProfile } from '../../services/qwacker'
+import {
+  fetchMumbles,
+  fetchProfile,
+  searchMumbles
+} from '../../services/qwacker'
 import { getToken } from 'next-auth/jwt'
 
-export default function ProfilePage({ user }) {
-  console.log(user)
+export default function ProfilePage({
+  user,
+  mumblesLikedByUser,
+  mumblesCreatedByUser
+}) {
+  console.log(mumblesLikedByUser)
+  console.log(mumblesCreatedByUser)
   return <Profile user={user} />
 }
 
-export const getServerSideProps = async ({ query }) => {
+export const getServerSideProps = async ({ query, req }) => {
   try {
-    console.log('get server side props')
     const secret = process.env.NEXTAUTH_SECRET
-    console.log('token ' + secret)
-    const token = await getToken({ secret })
-    console.log('token ' + secret)
-    console.log({ token })
+    const token = await getToken({ req, secret })
     const userId = query.alias
 
     const user = await fetchProfile(token?.accessToken, userId)
 
-    return { props: { user } }
+    const mumblesCreatedByUser = await fetchMumbles({
+      creator: userId,
+      limit: 100
+    })
+    const mumblesLikedByUser = await fetchMumbles({
+      likedBy: userId,
+      limit: 100
+    })
+
+    console.log(mumblesLikedByUser)
+
+    return { props: { user, mumblesCreatedByUser } }
   } catch (error) {
     let message
     if (error instanceof Error) {
