@@ -38,7 +38,6 @@ export const fetchMumblesWithUser = async (
   limit: number
 ) => {
   try {
-    console.log('fetching mumbles', accessToken, offset, limit)
     const { count, mumbles } = await fetchMumbles({
       offset,
       limit
