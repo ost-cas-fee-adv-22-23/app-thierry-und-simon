@@ -4,32 +4,37 @@ import Image from 'next/image'
 import { MumbleType } from '../Types/Mumble'
 import { InteractionButtons } from './interactionButtons'
 
-export const MumbleCard = (post: MumbleType) => {
+type Props = {
+  mumble: MumbleType
+}
+
+export const MumbleCard = ({ mumble }: Props) => {
+  console.log(mumble)
   return (
     <div className="mb-s">
       <Card
         showProfileImage={true}
         roundedBorders={true}
-        profileImageUrl={post.user?.avatarUrl}
+        profileImageUrl={mumble.user?.avatarUrl}
       >
-        {post.user && (
-          <Link href={`/profile/${post.user?.id}`}>
+        {mumble.user && (
+          <Link href={`/profile/${mumble.user?.id}`}>
             <User
               type={SizeType.BASE}
-              userName={post.user?.userName}
-              fullName={`${post.user?.firstName} ${post.user?.lastName}`}
+              userName={mumble.user?.userName}
+              fullName={`${mumble.user?.firstName} ${mumble.user?.lastName}`}
             />
           </Link>
         )}
-        <Link href={`/mumble/${post.id}`}>
-          <p className="mt-m">{post.text}</p>
+        <Link href={`/mumble/${mumble.id}`}>
+          <p className="mt-m">{mumble.text}</p>
         </Link>
-        {post.mediaUrl && (
+        {mumble.mediaUrl && (
           <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
             <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
               <Image
                 className="object-cover w-full h-full"
-                src={post.mediaUrl}
+                src={mumble.mediaUrl}
                 alt=""
                 width={500}
                 height={500}
@@ -37,8 +42,7 @@ export const MumbleCard = (post: MumbleType) => {
             </div>
           </div>
         )}
-
-        <InteractionButtons post={post} />
+        <InteractionButtons post={mumble} />
       </Card>
     </div>
   )

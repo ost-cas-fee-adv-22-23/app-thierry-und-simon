@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import type { AppProps } from 'next/app'
 import '../styles/globals.css'
 import { Layout } from '../components/layout/layout'
+import { SWRConfig } from 'swr'
 
 export default function App({
   Component,
@@ -11,6 +12,8 @@ export default function App({
   ...appProps
 }: AppProps) {
   const queryClient = new QueryClient()
+
+  console.log(pageProps)
 
   const getLayout = () => {
     if ([`/login`, `/register`].includes(appProps.router.pathname)) {
@@ -24,9 +27,11 @@ export default function App({
     }
   }
   return (
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>{getLayout()}</SessionProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <SWRConfig value={pageProps.fallback}>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider session={session}>{getLayout()}</SessionProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </SWRConfig>
   )
 }
