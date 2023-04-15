@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
-import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
+import {
+  Button,
+  ButtonColor,
+  ButtonSize,
+  Header,
+  HeaderType
+} from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 import { fetchMumblesWithUser } from '../services/postsService'
@@ -39,7 +45,6 @@ export default function PageHome() {
     setMumbles(getMumblesFromData(data))
   }, [data])
 
-  console.log('data', isValidating)
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -56,9 +61,13 @@ export default function PageHome() {
         </div>
         <WritePost />
         <Cards posts={mumbles} />
-        <button onClick={() => setSize(size + 1)}>
+        <Button
+          size={ButtonSize.medium}
+          color={ButtonColor.violet}
+          onClick={() => setSize(size + 1)}
+        >
           {isValidating ? 'Loading...' : 'Mehr laden, JETZT!'}
-        </button>
+        </Button>
       </div>
     </>
   )
