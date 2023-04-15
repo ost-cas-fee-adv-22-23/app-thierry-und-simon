@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
@@ -6,24 +7,39 @@ import { fetchMumblesWithUser } from '../services/postsService'
 import { useSession } from 'next-auth/react'
 import { getToken } from 'next-auth/jwt'
 import useSWRInfinite from 'swr/infinite'
+import { useEffect } from 'react'
+import { MumbleType } from '../Types/Mumble'
 
 export default function PageHome() {
   const { data: session }: any = useSession()
+  const [mumbles, setMumbles] = useState<MumbleType[]>([])
 
   const getKey = (accessToken: string, index: number) => {
-    if (accessToken !== undefined) {
-      const key = { toeken: accessToken, index: (index + 1) * 20 }
-      return key
+    const key = {
+      toeken: accessToken,
+      offset: index * 10,
+      index: index
     }
-    return null
+    return key
   }
 
-  const { data } = useSWRInfinite(
+  const { data, size, setSize, isLoading } = useSWRInfinite(
     (index: number) => getKey(session.accessToken, index),
-    session?.accessToken !== undefined
-      ? (key) => fetchMumblesWithUser(key.toeken, key.index)
-      : null
+    (key) => fetchMumblesWithUser(key.toeken, key.offset, 10)
   )
+
+  // Make sure that Mumbles are not undefined
+  function getMumblesFromData(data: any[] | undefined): MumbleType[] {
+    if (!data) return []
+    return data.map((d) => (d ? d.mumbles : [])).flat()
+  }
+
+  // Set Mumbles when data changes
+  useEffect(() => {
+    setMumbles(getMumblesFromData(data))
+  }, [data])
+
+  console.log('data', isLoading)
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -39,7 +55,10 @@ export default function PageHome() {
           </Header>
         </div>
         <WritePost />
-        {data && data.length > 0 && <Cards posts={data[0]?.mumbles} />}
+        <Cards posts={mumbles} />
+        <button onClick={() => setSize(size + 1)}>
+          {isLoading ? 'Loading...' : 'Mehr laden, JETZT!'}
+        </button>
       </div>
     </>
   )
@@ -47,7 +66,11 @@ export default function PageHome() {
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   console.log('getServerSideProps')
   const token = await getToken({ req })
-  const initialData = await fetchMumblesWithUser(token?.accessToken as string)
+  const initialData = await fetchMumblesWithUser(
+    token?.accessToken as string,
+    0,
+    10
+  )
 
   return {
     props: {
