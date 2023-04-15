@@ -8,7 +8,7 @@ import fetchSingleMumbleWithUser from '../../services/posts/singleMumbleWithUser
 import {
   getKey,
   useSingleMumblesWithUser
-} from '../../hooks/useSinlgeMumbleWithUser'
+} from '../../hooks/useSingleMumbleWithUser'
 import { getToken } from 'next-auth/jwt'
 
 type Props = {
