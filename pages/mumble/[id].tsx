@@ -1,136 +1,65 @@
-import {
-  Card,
-  InteractionButton,
-  InteractionButtonType,
-  SizeType,
-  User
-} from '@smartive-education/thierry-simon-mumble'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import Link from 'next/link'
 import fetchSingleMumble from '../../services/posts/singleMumble'
-import { fetchResponseToMumble } from '../../services/posts/responseToMumble'
-import { MumbleType } from '../../Types/Mumble'
-import { Response } from '../../Types/Responses'
 import { WritePost } from '../../components/writePost'
+import { MumbleCard } from '../../components/mumbelCard'
+import useSWR, { unstable_serialize } from 'swr'
+import { useSession } from 'next-auth/react'
+import fetchSingleMumbleWithUser from '../../services/posts/singleMumbleWithUser'
+import {
+  getKey,
+  useSingleMumblesWithUser
+} from '../../hooks/useSingleMumbleWithUser'
+import { getToken } from 'next-auth/jwt'
 
 type Props = {
-  mumble: MumbleType
-  responses: Response[]
+  mumbleId: string
 }
 
 export default function MumblePage({
-  mumble,
-  responses
+  mumbleId,
+  fallback
 }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
+  const { data: mumble, error, isLoading } = useSingleMumblesWithUser(mumbleId)
+
+  if (mumble) {
+    console.log(mumble)
+  }
+
+  console.log(fallback)
+
   return (
     <>
-      <Card
-        showProfileImage={true}
-        roundedBorders={true}
-        profileImageUrl={mumble?.user?.avatarUrl}
-      >
-        <Link href={`/profile/${mumble?.user?.id}`}>
-          <User
-            type={SizeType.BASE}
-            userName={mumble?.user?.userName}
-            fullName={`${mumble?.user?.firstName} ${mumble?.user?.lastName}`}
-          />
-        </Link>
-
-        <Link href={`/mumble/${mumble.id}`}>
-          <p className="mt-m">{mumble.text}</p>
-        </Link>
-        {mumble.mediaUrl && (
-          <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
-            <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
-              <img
-                className="object-cover w-full h-full"
-                src={mumble.mediaUrl}
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="flex">
-          <div>
-            <InteractionButton
-              type={InteractionButtonType.comment}
-              count={mumble.replyCount}
-            />
-          </div>
-          <div className="ml-xl">
-            <InteractionButton
-              type={InteractionButtonType.like}
-              count={mumble.likeCount}
-            />
-          </div>
-          <div className="ml-xl">
-            <InteractionButton type={InteractionButtonType.share} count={0} />
-          </div>
-        </div>
-      </Card>
+      {isLoading && <p>Is Loading</p>}
+      {mumble && <MumbleCard mumble={mumble} />}
       <WritePost />
-      {responses.length > 0 &&
-        responses.map((response) => (
-          <Card
-            roundedBorders={false}
-            showProfileImage={false}
-            key={response.id}
-          >
-            <Link href={`/profile/${response?.user?.id}`}>
-              <User
-                type={SizeType.BASE}
-                userName={response?.user?.userName}
-                fullName={`${response?.user?.firstName} ${response?.user?.lastName}`}
-              />
-            </Link>
-            <p className="mt-m">{mumble.text}</p>
-            {response.mediaUrl && (
-              <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
-                <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
-                  <img
-                    className="object-cover w-full h-full"
-                    src={response.mediaUrl}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className="flex">
-              <div>
-                <InteractionButton
-                  type={InteractionButtonType.comment}
-                  count={response.replyCount}
-                />
-              </div>
-              <div className="ml-xl">
-                <InteractionButton
-                  type={InteractionButtonType.like}
-                  count={response.likeCount}
-                />
-              </div>
-              <div className="ml-xl">
-                <InteractionButton
-                  type={InteractionButtonType.share}
-                  count={0}
-                />
-              </div>
-            </div>
-          </Card>
-        ))}
+      {/* {responses.length > 0 &&
+        responses.map((response, index) => (
+          <MumbleCard mumble={response} key={`mumblereponse-${index}`} />
+        ))} */}
     </>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async ({
-  query: { id }
+  req,
+  query
 }) => {
-  const mumble = await fetchSingleMumble(id as string)
-  const responses = await fetchResponseToMumble(id as string)
+  const token = await getToken({ req })
+  const mumbleId = query.id
+
+  const singleMumbleWithUser = await fetchSingleMumbleWithUser(
+    mumbleId as string,
+    token?.accessToken as string
+  )
+
   return {
     props: {
-      mumble,
-      responses
+      mumbleId,
+      fallback: {
+        [unstable_serialize(() =>
+          getKey(mumbleId as string, token?.accessToken as string)
+        )]: singleMumbleWithUser
+      }
     }
   }
 }

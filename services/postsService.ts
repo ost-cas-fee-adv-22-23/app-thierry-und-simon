@@ -80,6 +80,7 @@ export const fetchSingleMumble = async (id: string) => {
     console.log(error)
   }
 }
+
 const transformMumble = (mumble: RawMumble) => ({
   ...mumble,
   createdTimestamp: decodeTime(mumble.id)
