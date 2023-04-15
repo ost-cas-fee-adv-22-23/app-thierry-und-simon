@@ -91,7 +91,7 @@ export const WritePost: FC = () => {
         state.file,
         session?.data?.accessToken
       )
-      console.log(res)
+      console.log('gugus')
     }
   }
 
