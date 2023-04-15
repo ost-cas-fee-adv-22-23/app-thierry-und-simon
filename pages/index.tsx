@@ -1,11 +1,29 @@
-import { GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
-import { fetchMumbles } from '../services/qwacker'
-import { MumbleType } from '../Types/Mumble'
+import { fetchMumblesWithUser } from '../services/postsService'
+import { useSession } from 'next-auth/react'
+import { getToken } from 'next-auth/jwt'
+import useSWRInfinite from 'swr/infinite'
 
-export default function PageHome({ mumbles }: { mumbles: MumbleType[] }) {
+export default function PageHome() {
+  const { data: session }: any = useSession()
+
+  const getKey = (accessToken: string, index: number) => {
+    if (accessToken !== undefined) {
+      const key = { toeken: accessToken, index: (index + 1) * 20 }
+      return key
+    }
+    return null
+  }
+
+  const { data } = useSWRInfinite(
+    (index: number) => getKey(session.accessToken, index),
+    session?.accessToken !== undefined
+      ? (key) => fetchMumblesWithUser(key.toeken, key.index)
+      : null
+  )
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -21,23 +39,19 @@ export default function PageHome({ mumbles }: { mumbles: MumbleType[] }) {
           </Header>
         </div>
         <WritePost />
-        <Cards posts={mumbles} />
+        {data && data.length > 0 && <Cards posts={data[0]?.mumbles} />}
       </div>
     </>
   )
 }
-export const getStaticProps: GetStaticProps = async () => {
-  try {
-    const { count, mumbles } = await fetchMumbles({ limit: 100 })
-    return { props: { count, mumbles }, revalidate: 60 }
-  } catch (error) {
-    let message
-    if (error instanceof Error) {
-      message = error.message
-    } else {
-      message = String(error)
-    }
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  console.log('getServerSideProps')
+  const token = await getToken({ req })
+  const initialData = await fetchMumblesWithUser(token?.accessToken as string)
 
-    return { props: { error: message, mumbles: [], count: 0 } }
+  return {
+    props: {
+      initialData
+    }
   }
 }

@@ -1,53 +1,23 @@
-import {
-  Card,
-  InteractionButton,
-  InteractionButtonType,
-  SizeType,
-  User
-} from '@smartive-education/thierry-simon-mumble'
+import { Card, SizeType, User } from '@smartive-education/thierry-simon-mumble'
 import Link from 'next/link'
 import Image from 'next/image'
 import { MumbleType } from '../Types/Mumble'
-import { UserType } from '../Types/User'
-import { useSession } from 'next-auth/react'
-import { fetchProfile, likeMumble } from '../services/qwacker'
-import { useEffect, useState } from 'react'
 import { InteractionButtons } from './interactionButtons'
 
 export const MumbleCard = (post: MumbleType) => {
-  const { data: session }: any = useSession()
-  const [user, setUser] = useState<UserType | null>(null)
-
-  // useEffect(() => {
-  //   if (!session) return
-  //   const fetchCreater = async () => {
-  //     //const creater = await fetchProfile(session?.accessToken, post.creator)
-  //     //setUser(creater)
-  //   }
-  //   fetchCreater()
-  // }, [post.creator, session])
-
-  useEffect(() => {
-    fetch(`/api/profile/${post.creator}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data.user)
-      })
-  }, [post.creator])
-
   return (
     <div className="mb-s" key={post.id}>
       <Card
         showProfileImage={true}
         roundedBorders={true}
-        profileImageUrl={user?.avatarUrl}
+        profileImageUrl={post.user?.avatarUrl}
       >
-        {user && (
-          <Link href={`/profile/${user?.id}`}>
+        {post.user && (
+          <Link href={`/profile/${post.user?.id}`}>
             <User
               type={SizeType.BASE}
-              userName={user?.userName}
-              fullName={`${user?.firstName} ${user?.lastName}`}
+              userName={post.user?.userName}
+              fullName={`${post.user?.firstName} ${post.user?.lastName}`}
             />
           </Link>
         )}
