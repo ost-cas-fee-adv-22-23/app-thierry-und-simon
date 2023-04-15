@@ -34,12 +34,14 @@ export const fetchMumbles = async (params?: {
 
 export const fetchMumblesWithUser = async (
   accessToken: string,
-  offset: number
+  offset: number,
+  limit: number
 ) => {
   try {
-    console.log('fetching mumbles', accessToken, offset)
+    console.log('fetching mumbles', accessToken, offset, limit)
     const { count, mumbles } = await fetchMumbles({
-      offset: 0
+      offset,
+      limit
     })
     const mumblesWithUser = await Promise.all(
       mumbles.map(async (mumble) => {
