@@ -7,10 +7,18 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
 import { UserType } from '../Types/User'
+import { MumbleCard } from './mumbelCard'
 
-export default function Profile({ user }: { user: UserType }) {
+export default function Profile({
+  user,
+  mumblesLikedByUser,
+  mumblesCreatedByUser
+}: {
+  user: UserType
+}) {
   const { data: session } = useSession()
 
+  console.log(mumblesCreatedByUser)
   return (
     <div>
       <div className="w-100 pt-16/9 bg-violet-200 rounded-lg relative mb-l ">
@@ -40,6 +48,12 @@ export default function Profile({ user }: { user: UserType }) {
 
       <div className="my-l"></div>
       <Toggle />
+
+      <div>
+        {mumblesCreatedByUser.mumbles.map((post) => (
+          <MumbleCard post={post} />
+        ))}
+      </div>
     </div>
   )
 }

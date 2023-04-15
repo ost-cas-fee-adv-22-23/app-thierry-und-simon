@@ -11,9 +11,13 @@ export default function ProfilePage({
   mumblesLikedByUser,
   mumblesCreatedByUser
 }) {
-  console.log(mumblesLikedByUser)
-  console.log(mumblesCreatedByUser)
-  return <Profile user={user} />
+  return (
+    <Profile
+      user={user}
+      mumblesLikedByUser={mumblesLikedByUser}
+      mumblesCreatedByUser={mumblesCreatedByUser}
+    />
+  )
 }
 
 export const getServerSideProps = async ({ query, req }) => {
@@ -33,9 +37,7 @@ export const getServerSideProps = async ({ query, req }) => {
       limit: 100
     })
 
-    console.log(mumblesLikedByUser)
-
-    return { props: { user, mumblesCreatedByUser } }
+    return { props: { user, mumblesCreatedByUser, mumblesLikedByUser } }
   } catch (error) {
     let message
     if (error instanceof Error) {
