@@ -4,7 +4,7 @@ import { RawMumble, QwackerMumbleResponse } from '../Types/Mumble'
 
 export const fetchMumbles = async (params?: {
   limit?: number
-  offset?: number
+  offset?: number | string
   newerThanMumbleId?: string
 }) => {
   const { limit, offset, newerThanMumbleId } = params || {}
@@ -32,15 +32,18 @@ export const fetchMumbles = async (params?: {
   }
 }
 
-export const fetchMumblesWithUser = async (accessToken: string) => {
+export const fetchMumblesWithUser = async (
+  accessToken: string,
+  offset: number
+) => {
   try {
-    console.log('fetching mumbles', accessToken)
+    console.log('fetching mumbles', accessToken, offset)
     const { count, mumbles } = await fetchMumbles({
-      offset: accessToken[1] || 0
+      offset: 0
     })
     const mumblesWithUser = await Promise.all(
       mumbles.map(async (mumble) => {
-        const user = await fetchUser(accessToken[0], mumble.creator)
+        const user = await fetchUser(accessToken, mumble.creator)
         mumble.user = user
         return mumble
       })

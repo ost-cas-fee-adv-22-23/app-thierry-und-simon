@@ -10,9 +10,10 @@ import useSWRInfinite from 'swr/infinite'
 export default function PageHome() {
   const { data: session }: any = useSession()
 
-  const getKey = (accessToken: string | null, index: number) => {
+  const getKey = (accessToken: string, index: number) => {
     if (accessToken !== undefined) {
-      return [accessToken, (index + 1) * 10]
+      const key = { toeken: accessToken, index: (index + 1) * 20 }
+      return key
     }
     return null
   }
@@ -20,10 +21,9 @@ export default function PageHome() {
   const { data } = useSWRInfinite(
     (index: number) => getKey(session.accessToken, index),
     session?.accessToken !== undefined
-      ? (accessToken: string) => fetchMumblesWithUser(accessToken)
+      ? (key) => fetchMumblesWithUser(key.toeken, key.index)
       : null
   )
-  console.log(data)
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -45,6 +45,7 @@ export default function PageHome() {
   )
 }
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  console.log('getServerSideProps')
   const token = await getToken({ req })
   const initialData = await fetchMumblesWithUser(token?.accessToken as string)
 
