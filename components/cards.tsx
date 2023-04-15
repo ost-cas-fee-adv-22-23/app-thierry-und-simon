@@ -10,7 +10,7 @@ export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
   return (
     <>
       {posts?.map((post: MumbleType) => {
-        return <MumbleCard {...post} key={post.id} />
+        return <MumbleCard mumble={post} key={post.id} />
       })}
     </>
   )
