@@ -23,7 +23,7 @@ export default function PageHome() {
     return key
   }
 
-  const { data, size, setSize, isLoading } = useSWRInfinite(
+  const { data, size, setSize, isValidating } = useSWRInfinite(
     (index: number) => getKey(session.accessToken, index),
     (key) => fetchMumblesWithUser(key.toeken, key.offset, 10)
   )
@@ -39,7 +39,7 @@ export default function PageHome() {
     setMumbles(getMumblesFromData(data))
   }, [data])
 
-  console.log('data', isLoading)
+  console.log('data', isValidating)
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -57,7 +57,7 @@ export default function PageHome() {
         <WritePost />
         <Cards posts={mumbles} />
         <button onClick={() => setSize(size + 1)}>
-          {isLoading ? 'Loading...' : 'Mehr laden, JETZT!'}
+          {isValidating ? 'Loading...' : 'Mehr laden, JETZT!'}
         </button>
       </div>
     </>
