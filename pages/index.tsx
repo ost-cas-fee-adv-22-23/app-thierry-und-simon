@@ -17,12 +17,18 @@ import { MumbleType } from '../Types/Mumble'
 
 export default function PageHome() {
   const [mumbles, setMumbles] = useState<MumbleType[]>([])
-  const { data, size, setSize, isValidating } = useMumblesWithUser(10)
+  const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(10)
 
   // Get Mumbles from data and make sure that Mumbles are not undefined
   function getMumblesFromData(data: any[] | undefined): MumbleType[] {
     if (!data) return []
     return data.map((d) => (d ? d.mumbles : [])).flat()
+  }
+
+  // get highest count from all arrays
+  function getHighestCount(data: any[] | undefined): number {
+    if (!data) return 0
+    return data.map((d) => (d ? d.count : 0)).reduce((a, b) => Math.max(a, b))
   }
 
   // Set Mumbles when data changes, mainly for reloading additional mumbles
@@ -44,7 +50,11 @@ export default function PageHome() {
             repellat dicta.
           </Header>
         </div>
-        <WritePost />
+        <WritePost
+          data={getMumblesFromData(data)}
+          mutateFn={mutate}
+          count={getHighestCount(data)}
+        />
         <Cards posts={mumbles} />
         <Button
           size={ButtonSize.medium}
