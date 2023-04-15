@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
+import { unstable_serialize } from 'swr/infinite'
 import {
   Button,
   ButtonColor,
@@ -10,12 +11,12 @@ import {
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 import { fetchMumblesWithUser } from '../services/postsService'
-import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
+import { getKey, useMumblesWithUser } from '../hooks/useMumblesWithUser'
 import { getToken } from 'next-auth/jwt'
 import { useEffect } from 'react'
 import { MumbleType } from '../Types/Mumble'
 
-export default function PageHome() {
+export default function PageHome({ fallback }: any) {
   const [mumbles, setMumbles] = useState<MumbleType[]>([])
   const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(10)
 
@@ -35,6 +36,8 @@ export default function PageHome() {
   useEffect(() => {
     setMumbles(getMumblesFromData(data))
   }, [data])
+
+  console.log(fallback)
 
   return (
     <>
@@ -68,9 +71,8 @@ export default function PageHome() {
   )
 }
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  console.log('getServerSideProps')
   const token = await getToken({ req })
-  const initialData = await fetchMumblesWithUser(
+  const initialMumbles = await fetchMumblesWithUser(
     token?.accessToken as string,
     0,
     10
@@ -78,7 +80,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      initialData
+      fallback: {
+        [unstable_serialize(() => getKey(token?.accessToken, 0, 10))]:
+          initialMumbles
+      }
     }
   }
 }

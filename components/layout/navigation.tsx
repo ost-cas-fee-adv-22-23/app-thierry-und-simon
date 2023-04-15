@@ -5,7 +5,6 @@ import { IconType, NaviButton } from '@smartive-education/thierry-simon-mumble'
 
 export const Navigation = () => {
   const { data: session } = useSession()
-  console.log(session)
   return (
     <header className="h-20 bg-violet-600">
       <div className="flex items-center justify-between h-full max-w-3xl mx-auto px-10 color text-white">
