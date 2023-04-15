@@ -4,7 +4,6 @@ import { fetchMumblesWithUser } from '../services/postsService'
 
 export const useMumblesWithUser = (pageLimit: number) => {
   const { data: session }: any = useSession()
-  console.log('session', session)
 
   const getKey = (session: any, index: number) => {
     const key = {
@@ -15,9 +14,9 @@ export const useMumblesWithUser = (pageLimit: number) => {
     return key
   }
 
-  const { data, size, setSize, isValidating } = useSWRInfinite(
+  const { data, size, setSize, isValidating, mutate } = useSWRInfinite(
     (index: number) => getKey(session, index),
     (key) => fetchMumblesWithUser(key.toeken, key.offset, pageLimit)
   )
-  return { data, size, setSize, isValidating }
+  return { data, size, setSize, isValidating, mutate }
 }

@@ -15,6 +15,7 @@ import {
 import { useSession } from 'next-auth/react'
 import { FC, useReducer } from 'react'
 import { postMumble } from '../services/qwacker'
+import { MumbleType, QwackerMumbleResponse } from '../Types/Mumble'
 
 const reducer = function (state, action) {
   switch (action.type) {
@@ -71,8 +72,14 @@ const reducer = function (state, action) {
   }
 }
 
-export const WritePost: FC = () => {
-  const session = useSession()
+type WriteMumbleProps = {
+  data: MumbleType[]
+  mutateFn: any
+  count: number
+}
+
+export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
+  const session: any = useSession()
 
   const [state, dispatch] = useReducer(reducer, {
     modalIsOpen: false,
@@ -91,6 +98,7 @@ export const WritePost: FC = () => {
         state.file,
         session?.data?.accessToken
       )
+      mutateFn([{ count: count, mumbles: [...data, res] }])
       console.log(res)
     }
   }
