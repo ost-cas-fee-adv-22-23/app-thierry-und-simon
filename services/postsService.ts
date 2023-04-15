@@ -32,15 +32,15 @@ export const fetchMumbles = async (params?: {
   }
 }
 
-export const fetchMumblesWithUser = async (
-  accessToken: string,
-  offset?: number
-) => {
+export const fetchMumblesWithUser = async (accessToken: string) => {
   try {
-    const { count, mumbles } = await fetchMumbles({ offset: offset || 0 })
+    console.log('fetching mumbles', accessToken)
+    const { count, mumbles } = await fetchMumbles({
+      offset: accessToken[1] || 0
+    })
     const mumblesWithUser = await Promise.all(
       mumbles.map(async (mumble) => {
-        const user = await fetchUser(accessToken, mumble.creator)
+        const user = await fetchUser(accessToken[0], mumble.creator)
         mumble.user = user
         return mumble
       })

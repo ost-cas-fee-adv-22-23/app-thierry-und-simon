@@ -1,16 +1,29 @@
 import { GetServerSideProps } from 'next'
-import { getToken } from 'next-auth/jwt'
-import { QueryClient, dehydrate } from '@tanstack/react-query'
-import { useMumbles } from '../hooks/mumbles'
 import { Header, HeaderType } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 import { fetchMumblesWithUser } from '../services/postsService'
 import { useSession } from 'next-auth/react'
+import { getToken } from 'next-auth/jwt'
+import useSWRInfinite from 'swr/infinite'
 
 export default function PageHome() {
   const { data: session }: any = useSession()
-  const { data: mumbles } = useMumbles(session?.accessToken as string)
+
+  const getKey = (accessToken: string | null, index: number) => {
+    if (accessToken !== undefined) {
+      return [accessToken, (index + 1) * 10]
+    }
+    return null
+  }
+
+  const { data } = useSWRInfinite(
+    (index: number) => getKey(session.accessToken, index),
+    session?.accessToken !== undefined
+      ? (accessToken: string) => fetchMumblesWithUser(accessToken)
+      : null
+  )
+  console.log(data)
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -26,22 +39,18 @@ export default function PageHome() {
           </Header>
         </div>
         <WritePost />
-        <Cards posts={mumbles?.mumbles} />
+        {data && data.length > 0 && <Cards posts={data[0]?.mumbles} />}
       </div>
     </>
   )
 }
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const queryClient = new QueryClient()
-
   const token = await getToken({ req })
-  await queryClient.fetchQuery(['mumbles', token], () =>
-    fetchMumblesWithUser(token?.accessToken as string)
-  )
+  const initialData = await fetchMumblesWithUser(token?.accessToken as string)
 
   return {
     props: {
-      dehydratedState: dehydrate(queryClient)
+      initialData
     }
   }
 }
