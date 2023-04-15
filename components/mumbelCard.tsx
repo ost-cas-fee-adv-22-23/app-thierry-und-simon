@@ -6,7 +6,7 @@ import { InteractionButtons } from './interactionButtons'
 
 export const MumbleCard = (post: MumbleType) => {
   return (
-    <div className="mb-s" key={`${post.id}${post.creator}`}>
+    <div className="mb-s">
       <Card
         showProfileImage={true}
         roundedBorders={true}

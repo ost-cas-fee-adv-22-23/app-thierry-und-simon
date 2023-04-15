@@ -10,37 +10,22 @@ import {
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 import { fetchMumblesWithUser } from '../services/postsService'
-import { useSession } from 'next-auth/react'
+import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
 import { getToken } from 'next-auth/jwt'
-import useSWRInfinite from 'swr/infinite'
 import { useEffect } from 'react'
 import { MumbleType } from '../Types/Mumble'
 
 export default function PageHome() {
-  const { data: session }: any = useSession()
   const [mumbles, setMumbles] = useState<MumbleType[]>([])
+  const { data, size, setSize, isValidating } = useMumblesWithUser(10)
 
-  const getKey = (accessToken: string, index: number) => {
-    const key = {
-      toeken: accessToken,
-      offset: index * 10,
-      index: index
-    }
-    return key
-  }
-
-  const { data, size, setSize, isValidating } = useSWRInfinite(
-    (index: number) => getKey(session.accessToken, index),
-    (key) => fetchMumblesWithUser(key.toeken, key.offset, 10)
-  )
-
-  // Make sure that Mumbles are not undefined
+  // Get Mumbles from data and make sure that Mumbles are not undefined
   function getMumblesFromData(data: any[] | undefined): MumbleType[] {
     if (!data) return []
     return data.map((d) => (d ? d.mumbles : [])).flat()
   }
 
-  // Set Mumbles when data changes
+  // Set Mumbles when data changes, mainly for reloading additional mumbles
   useEffect(() => {
     setMumbles(getMumblesFromData(data))
   }, [data])
