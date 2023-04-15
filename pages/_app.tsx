@@ -3,7 +3,6 @@ import type { AppProps } from 'next/app'
 import { SWRConfig } from 'swr'
 import '../styles/globals.css'
 import { Layout } from '../components/layout/layout'
-import { SWRConfig } from 'swr'
 
 export default function App({
   Component,
