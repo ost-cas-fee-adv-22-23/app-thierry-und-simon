@@ -16,16 +16,16 @@ type Props = {
 }
 
 export default function MumblePage({
-  mumbleId
+  mumbleId,
+  fallback
 }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
-  const { data: session } = useSession()
-  console.log(session)
-
   const { data: mumble, error, isLoading } = useSingleMumblesWithUser(mumbleId)
 
   if (mumble) {
     console.log(mumble)
   }
+
+  console.log(fallback)
 
   return (
     <>
@@ -40,38 +40,25 @@ export default function MumblePage({
   )
 }
 
-// export const getServerSideProps: GetServerSideProps = async ({
-//   query: { id }
-// }) => {
-//   const mumble = await fetchSingleMumble(id as string)
-//   const responses = await fetchResponseToMumble(id as string)
-//   return {
-//     props: {
-//       mumble,
-//       responses
-//     }
-//   }
-// }
-
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   query
 }) => {
   const token = await getToken({ req })
-  const id = query.id
+  const mumbleId = query.id
 
   const singleMumbleWithUser = await fetchSingleMumbleWithUser(
-    id as string,
+    mumbleId as string,
     token?.accessToken as string
   )
 
-  console.log(singleMumbleWithUser)
-
   return {
     props: {
-      mumbleId: id,
+      mumbleId,
       fallback: {
-        [unstable_serialize(getKey)]: singleMumbleWithUser
+        [unstable_serialize(() =>
+          getKey(mumbleId as string, token?.accessToken as string)
+        )]: singleMumbleWithUser
       }
     }
   }
