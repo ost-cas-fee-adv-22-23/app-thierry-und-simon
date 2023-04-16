@@ -14,6 +14,8 @@ import { getToken } from 'next-auth/jwt'
 import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
 
 export default function PageHome({ fallback }: any) {
+  const { data: session } = useSession()
+
   const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(
     10,
     fallback
@@ -33,19 +35,25 @@ export default function PageHome({ fallback }: any) {
             repellat dicta.
           </Header>
         </div>
-        <WritePost
-          data={getMumblesFromData(data)}
-          mutateFn={mutate}
-          count={getHighestCount(data)}
-        />
+        {session && (
+          <WritePost
+            data={getMumblesFromData(data)}
+            mutateFn={mutate}
+            count={getHighestCount(data)}
+          />
+        )}
         <Cards posts={getMumblesFromData(data)} />
-        <Button
-          size={ButtonSize.medium}
-          color={ButtonColor.violet}
-          onClick={() => setSize(size + 1)}
-        >
-          {isValidating ? 'Loading...' : 'Mehr laden, JETZT!'}
-        </Button>
+        <div className="flex justify-center align-center py-m">
+          <div>
+            <Button
+              size={ButtonSize.large}
+              color={ButtonColor.violet}
+              onClick={() => setSize(size + 1)}
+            >
+              {isValidating ? 'Loading...' : 'Mehr laden!'}
+            </Button>
+          </div>
+        </div>
       </div>
     </>
   )

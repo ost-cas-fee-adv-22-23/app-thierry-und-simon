@@ -1,23 +1,39 @@
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { IconType, NaviButton } from '@smartive-education/thierry-simon-mumble'
+import {
+  Header,
+  HeaderType,
+  Icon,
+  IconType,
+  NaviButton
+} from '@smartive-education/thierry-simon-mumble'
 
 export const Navigation = () => {
   const { data: session } = useSession()
+
   return (
     <header className="h-20 bg-violet-600">
       <div className="flex items-center justify-between h-full max-w-3xl mx-auto px-10 color text-white">
-        <h1>Mumble</h1>
+        <Link href="/">
+          <div className="flex items-center">
+            <Header type={HeaderType.h1} style={HeaderType.h2}>
+              Mumble
+            </Header>
+            <div className="ml-s">
+              <Icon type={IconType.mumble} size={40} />
+            </div>
+          </div>
+        </Link>
         <nav>
           <ul className="flex items-center gap-6">
             {session && (
               <>
                 <li>
-                  <div className="rounded-full bg-purple-700 h-10 w-10">
-                    {session?.user?.image && (
-                      <Image
-                        src={session?.user?.image}
+                  <div className="rounded-full bg-purple-700 h-10 w-10 overflow-hidden">
+                    {session?.user?.avatarUrl && (
+                      <img
+                        src={session?.user?.avatarUrl}
                         alt={session?.user?.name || 'User'}
                       />
                     )}
@@ -26,10 +42,14 @@ export const Navigation = () => {
                 <li>
                   <NaviButton text="Settings" icon={IconType.profile} />
                 </li>
-                <li>
-                  <Link href="/login">
-                    <NaviButton text="Logout" icon={IconType.logout} />
-                  </Link>
+                <li
+                  onClick={() => {
+                    signOut({
+                      callbackUrl: '/'
+                    })
+                  }}
+                >
+                  <NaviButton text="Logout" icon={IconType.logout} />
                 </li>
               </>
             )}

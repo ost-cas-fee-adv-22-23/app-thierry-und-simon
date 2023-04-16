@@ -22,42 +22,29 @@ export default function MumblePage({
 }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
   const { data: session, status }: any = useSession()
 
-  // const {
-  //   data: mumble,
-  //   error,
-  //   isLoading
-  // } = useSingleMumblesWithUser(mumbleId, fallback)
-
   const {
     data: mumble,
+    error,
     isLoading,
     isValidating,
-    error
-  } = useSWR(
-    ['api', 'singleMumble', mumbleId],
-    ([var1, var2, mumbleId]) =>
-      fetchSingleMumbleWithUser(mumbleId, session?.accessToken),
-    { fallback }
-  )
-
-  if (mumble) {
-    console.log(mumble)
-  }
-
-  console.log(fallback)
+    mutate
+  } = useSingleMumblesWithUser(mumbleId, fallback)
 
   return (
-    <>
+
+    <div className="max-w-3xl mx-auto px-10 mb-s">
       {isLoading && <p>Is Loading</p>}
       {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
-      <WritePost />
 
-      {/* {responses.length > 0 &&
-        responses.map((response, index) => (
+      <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
+
+      {mumble &&
+        mumble?.responses?.length > 0 &&
+        mumble.responses.map((response, index) => (
           <MumbleCard mumble={response} key={`mumblereponse-${index}`} />
-        ))} */}
-    </>
+        ))}
+    </div>
   )
 }
 
@@ -68,23 +55,15 @@ export const getServerSideProps: GetServerSideProps = async ({
   const token = await getToken({ req })
   const mumbleId = query.id
 
-  const singleMumbleWithUser = await fetchSingleMumbleWithUser(
-    mumbleId,
-    token?.accessToken
-  )
+  const singleMumbleWithUser = await fetchSingleMumbleWithUser({
+    id: mumbleId,
+    accessToken: token?.accessToken
+  })
 
   return {
     props: {
       mumbleId,
-      fallback: {
-        [unstable_serialize(['api', 'singleMumble', mumbleId])]:
-          singleMumbleWithUser
-      }
-      // fallback: {
-      //   [unstable_serialize(() =>
-      //     getKey(mumbleId as string, token?.accessToken)
-      //   )]: singleMumbleWithUser
-      // }
+      fallback: singleMumbleWithUser
     }
   }
 }

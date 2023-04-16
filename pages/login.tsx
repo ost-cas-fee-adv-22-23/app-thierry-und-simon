@@ -12,10 +12,16 @@ import {
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Hashtag } from '../components/hashtag'
 
 export default function Home() {
   const { data: session } = useSession()
+  const router = useRouter()
+
+  if (session) {
+    router.push('/')
+  }
 
   return (
     <>
@@ -36,42 +42,30 @@ export default function Home() {
           <Header style={HeaderType.h1} type={HeaderType.h1}>
             Anmelden
           </Header>
-          {!!session && (
-            <a
-              href="#"
-              onClick={() =>
-                signOut({
-                  callbackUrl: '/'
-                })
-              }
-            >
-              <h2 className="font-medium">Logout &rarr;</h2>
-              <p className="font-medium">Logout from your account</p>
-            </a>
-          )}
 
           {!session && (
-            <Link
-              href="/"
-              onClick={() =>
-                signIn('zitadel', {
-                  callbackUrl: '/'
-                })
-              }
-            >
+            <div>
               <Button
                 size={ButtonSize.large}
                 color={ButtonColor.gradiant}
                 label="Let's Mumble"
+                onClick={() =>
+                  signIn('zitadel', {
+                    callbackUrl: '/'
+                  })
+                }
               />
-            </Link>
+            </div>
           )}
-          <Label type={LabelType.M}>
-            Noch nicht registriert?{' '}
-            <Link href="/register" className="text-violet-600 underline">
-              Jetzt registrieren
-            </Link>
-          </Label>
+          <div className="text-center">
+            <Label type={LabelType.M}>
+              Noch nicht registriert?
+              <br />
+              <Link href="/register" className="text-violet-600 underline">
+                Jetzt registrieren
+              </Link>
+            </Label>
+          </div>
         </section>
       </main>
     </>
