@@ -6,15 +6,17 @@ export const fetchMumbles = async (params?: {
   limit?: number
   offset?: number | string
   newerThanMumbleId?: string
+  creator?: string
 }) => {
-  const { limit, offset, newerThanMumbleId } = params || {}
+  const { limit, offset, newerThanMumbleId, creator } = params || {}
 
   const url = `${
     process.env.NEXT_PUBLIC_QWACKER_API_URL
   }/posts?${new URLSearchParams({
     limit: limit?.toString() || '10',
     offset: offset?.toString() || '0',
-    newerThan: newerThanMumbleId || ''
+    newerThan: newerThanMumbleId || '',
+    creator: creator || ''
   })}`
 
   const res = await fetch(url, {
@@ -32,15 +34,17 @@ export const fetchMumbles = async (params?: {
   }
 }
 
-export const fetchMumblesWithUser = async (
-  accessToken: string,
-  offset: number,
-  limit: number
-) => {
+export const fetchMumblesWithUser = async ({
+  accessToken,
+  offset,
+  limit,
+  creator
+}: any) => {
   try {
     const { count, mumbles } = await fetchMumbles({
       offset,
-      limit
+      limit,
+      creator
     })
     const mumblesWithUser = await Promise.all(
       mumbles.map(async (mumble) => {
