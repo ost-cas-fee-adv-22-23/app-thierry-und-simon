@@ -9,39 +9,43 @@ type Props = {
 }
 
 export const MumbleCard = ({ mumble }: Props) => {
+  const isReply = mumble.type === 'reply'
+
   return (
-    <div className="mb-s">
+    <div className={!isReply ? 'mb-s' : 'mb-1'}>
       <Card
-        showProfileImage={true}
-        roundedBorders={true}
+        showProfileImage={isReply ? false : true}
+        roundedBorders={isReply ? false : true}
         profileImageUrl={mumble.user?.avatarUrl}
       >
         {mumble.user && (
           <Link href={`/profile/${mumble.user?.id}`}>
             <User
-              type={SizeType.BASE}
+              type={isReply ? SizeType.SM : SizeType.BASE}
               userName={mumble.user?.userName}
               fullName={`${mumble.user?.firstName} ${mumble.user?.lastName}`}
+              userImageSrc={mumble.user?.avatarUrl}
             />
           </Link>
         )}
         <Link href={`/mumble/${mumble.id}`}>
           <p className="mt-m">{mumble.text}</p>
-        </Link>
-        {mumble.mediaUrl && (
-          <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
-            <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
-              <Image
-                className="object-cover w-full h-full"
-                src={mumble.mediaUrl}
-                alt=""
-                width={500}
-                height={500}
-              />
+          {mumble.mediaUrl && (
+            <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
+              <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
+                <Image
+                  className="object-cover w-full h-full"
+                  src={mumble.mediaUrl}
+                  alt=""
+                  width={500}
+                  height={500}
+                />
+              </div>
             </div>
-          </div>
-        )}
-        <InteractionButtons post={mumble} />
+          )}
+        </Link>
+
+        {!isReply && <InteractionButtons post={mumble} />}
       </Card>
     </div>
   )

@@ -1,4 +1,5 @@
 import { fetchUser } from '../userServices'
+import { fetchResponseToMumble } from './responseToMumble'
 
 export const fetchSingleMumbleWithUser = async (
   id: string,
@@ -13,6 +14,17 @@ export const fetchSingleMumbleWithUser = async (
 
     const user = await fetchUser(accessToken, mumble.creator)
     mumble.user = user
+
+    const responses = await fetchResponseToMumble(id)
+    mumble.responses = responses
+
+    let index = 0
+    for await (const response of responses) {
+      console.log(response)
+      const user = await fetchUser(accessToken, response.creator)
+      mumble.responses[index].user = user
+      index++
+    }
 
     return mumble
   } catch (error) {

@@ -10,9 +10,12 @@ import {
   IconType,
   Modal,
   ModalDevice,
-  Textarea
+  SizeType,
+  Textarea,
+  User
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import { FC, useReducer } from 'react'
 import { postMumble } from '../services/qwacker'
 import { MumbleType } from '../Types/Mumble'
@@ -80,6 +83,10 @@ type WriteMumbleProps = {
 
 export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
   const session: any = useSession()
+  const router = useRouter()
+  const isReply = router.pathname.includes('/mumble/')
+
+  console.log(session)
 
   const [state, dispatch] = useReducer(reducer, {
     modalIsOpen: false,
@@ -104,19 +111,28 @@ export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
   }
 
   return (
-    <div className="mb-s">
+    <div className={isReply ? 'mb-1' : 'mb-s'}>
       <Card
-        showProfileImage={true}
-        roundedBorders={true}
+        showProfileImage={isReply ? false : true}
+        roundedBorders={isReply ? false : true}
         profileImageUrl={session?.data?.user.avatarUrl}
       >
         <div className="mb-s">
-          <Header type={HeaderType.h4} style={HeaderType.h4}>
-            Hey, was läuft?
-          </Header>
+          {isReply ? (
+            <User
+              type={SizeType.SM}
+              userName={session?.data?.user.username}
+              fullName={`${session?.data?.user.firstname} ${session?.data?.user.lastname}`}
+              userImageSrc={session?.data?.user.avatarUrl}
+            />
+          ) : (
+            <Header type={HeaderType.h4} style={HeaderType.h4}>
+              Hey, was läuft?
+            </Header>
+          )}
         </div>
         <Textarea
-          placeholder="Deine Meinung zählt!"
+          placeholder={isReply ? 'Was meinst du dazu?' : 'Deine Meinung zählt!'}
           rows={5}
           onChange={(e) => {
             dispatch({ type: 'change_text', inputText: e.target.value })
