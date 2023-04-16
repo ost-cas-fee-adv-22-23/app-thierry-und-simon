@@ -4,14 +4,13 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { likeMumble, unLikeMumble } from '../services/qwacker'
-import { MumbleType } from '../Types/Mumble'
 
-export const InteractionButtons = ({ post }) => {
+export const InteractionButtons = ({ post }: any) => {
   const { data: session }: any = useSession()
   const router = useRouter()
-  const [hasLiked, setHasLiked] = useState(post.likedByUser)
+  const [hasLiked] = useState(post.likedByUser)
 
   const handleLike = async () => {
     if (!hasLiked) {

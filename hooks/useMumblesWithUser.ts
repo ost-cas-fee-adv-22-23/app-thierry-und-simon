@@ -11,7 +11,7 @@ export const getKey = (session: any, index: number, pageLimit: number) => {
   return key
 }
 
-export const useMumblesWithUser = (pageLimit: number) => {
+export const useMumblesWithUser = (pageLimit: number, fallback: any) => {
   const { data: session }: any = useSession()
 
   const getKey = (session: any, index: number) => {
@@ -23,9 +23,13 @@ export const useMumblesWithUser = (pageLimit: number) => {
     return key
   }
 
-  const { data, size, setSize, isValidating, mutate } = useSWRInfinite(
-    (index: number) => getKey(session, index),
-    (key) => fetchMumblesWithUser(key.toeken, key.offset, pageLimit)
-  )
-  return { data, size, setSize, isValidating, mutate }
+  const { data, size, setSize, isValidating, mutate, isLoading } =
+    useSWRInfinite(
+      (index: number) => getKey(session, index),
+      (key) => fetchMumblesWithUser(key.toeken, key.offset, pageLimit),
+      {
+        fallbackData: fallback.mumbles
+      }
+    )
+  return { data, size, setSize, isValidating, mutate, isLoading }
 }
