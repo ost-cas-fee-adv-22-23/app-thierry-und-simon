@@ -78,6 +78,47 @@ export const postMumble = async (
   }
 }
 
+export const postReply = async (
+  text: string,
+  file: UploadImage | null,
+  mumbleId: string,
+  accessToken?: string
+) => {
+  if (!accessToken) {
+    throw new Error('No access token')
+  }
+
+  console.log(text)
+
+  const formData = new FormData()
+  formData.append('text', text)
+  if (file) {
+    formData.append('image', file)
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${mumbleId}`,
+      {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    )
+    if (!response.ok) {
+      throw new Error('Something was not okay')
+    }
+
+    return transformMumble(await response.json())
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : 'Could not post reply'
+    )
+  }
+}
+
 const transformMumble = (mumble: RawMumble) => ({
   ...mumble,
   createdTimestamp: decodeTime(mumble.id)

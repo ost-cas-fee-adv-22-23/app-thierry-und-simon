@@ -1,12 +1,7 @@
 import { fetchUser } from '../userServices'
 import { fetchResponseToMumble } from './responseToMumble'
 
-export const fetchSingleMumbleWithUser = async (
-  id: string,
-  accessToken: string
-) => {
-  console.log(id)
-  console.log(accessToken)
+export const fetchSingleMumbleWithUser = async ({ id, accessToken }: any) => {
   try {
     const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${id}`
     const res = await fetch(url)
