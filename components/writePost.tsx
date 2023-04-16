@@ -140,14 +140,24 @@ export const WritePost: FC<WriteMumbleProps> = ({
       }
       if (isReply) {
         setIsLoading(true)
-        const res = await postReply(
-          state.text,
-          state.file,
-          mumbleId,
-          session?.data?.accessToken
+        // const res = await postReply(
+        //   state.text,
+        //   state.file,
+        //   mumbleId,
+        //   session?.data?.accessToken
+        // )
+
+        // { id: mumbleId, accessToken: session?.data?.accessToken }
+        let data = await mutateFn(
+          { id: mumbleId, accessToken: session?.data?.accessToken },
+          postReply(
+            state.text,
+            state.file,
+            mumbleId,
+            session?.data?.accessToken
+          )
         )
-        console.log(res)
-        mutateFn({ ...mumble, responses: [...mumble.responses, res] })
+        console.log(data)
         setIsLoading(false)
       }
       dispatch({ type: 'reset_form' })

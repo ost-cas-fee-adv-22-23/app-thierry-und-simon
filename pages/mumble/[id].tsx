@@ -30,15 +30,14 @@ export default function MumblePage({
     mutate
   } = useSingleMumblesWithUser(mumbleId, fallback)
 
-  console.log(fallback)
-
   return (
     <>
       {mumble && <MumbleCard mumble={mumble} />}
 
       <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
 
-      {mumble.responses.length > 0 &&
+      {mumble &&
+        mumble?.responses?.length > 0 &&
         mumble.responses.map((response, index) => (
           <MumbleCard mumble={response} key={`mumblereponse-${index}`} />
         ))}
