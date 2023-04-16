@@ -16,8 +16,8 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC, useReducer } from 'react'
-import { postMumble } from '../services/qwacker'
+import { FC, useEffect, useReducer, useState } from 'react'
+import { postMumble, postReply } from '../services/qwacker'
 import { MumbleType } from '../Types/Mumble'
 
 const reducer = function (state, action) {
@@ -37,15 +37,13 @@ const reducer = function (state, action) {
     case 'change_text': {
       return {
         ...state,
-        text: action.inputText.trim(),
-        hasError: false
+        text: action.inputText
       }
     }
     case 'change_file': {
       return {
         ...state,
-        file: action.inputFile,
-        hasError: false
+        file: action.inputFile
       }
     }
     case 'cancel_upload': {
@@ -67,7 +65,25 @@ const reducer = function (state, action) {
       return {
         ...state,
         hasError,
-        errorMessage
+        errorMessage,
+        showErrorMessage: false
+      }
+    }
+    case 'show_error_message': {
+      return {
+        ...state,
+        showErrorMessage: true
+      }
+    }
+    case 'reset_form': {
+      return {
+        ...state,
+        showErrorMessage: false,
+        modalIsOpen: false,
+        file: null,
+        text: '',
+        hasError: false,
+        errorMessage: ''
       }
     }
     default:
@@ -78,35 +94,73 @@ const reducer = function (state, action) {
 type WriteMumbleProps = {
   data: MumbleType[]
   mutateFn: any
-  count: number
+  count?: number
+  mumbleId?: string
+  mumble: any
 }
 
-export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
+export const WritePost: FC<WriteMumbleProps> = ({
+  data,
+  mutateFn,
+  count,
+  mumbleId,
+  mumble
+}) => {
   const session: any = useSession()
   const router = useRouter()
   const isReply = router.pathname.includes('/mumble/')
-
-  console.log(session)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [state, dispatch] = useReducer(reducer, {
     modalIsOpen: false,
     file: null,
     text: '',
     hasError: false,
-    errorMessage: ''
+    errorMessage: '',
+    showErrorMessage: false
   })
 
-  const handleSubmit = async () => {
+  useEffect(() => {
     dispatch({ type: 'validate_input' })
+  }, [state.text, state.file])
 
-    if (!state.hasError) {
-      const res = await postMumble(
-        state.text,
-        state.file,
-        session?.data?.accessToken
-      )
-      mutateFn([{ count: count, mumbles: [...data, res] }])
-      console.log(res)
+  const handleSubmit = async () => {
+    if (state.hasError) {
+      dispatch({ type: 'show_error_message' })
+    } else {
+      if (!isReply) {
+        setIsLoading(true)
+        const res = await postMumble(
+          state.text,
+          state.file,
+          session?.data?.accessToken
+        )
+        mutateFn([{ count: count, mumbles: [...data, res] }])
+        setIsLoading(false)
+      }
+      if (isReply) {
+        setIsLoading(true)
+        // const res = await postReply(
+        //   state.text,
+        //   state.file,
+        //   mumbleId,
+        //   session?.data?.accessToken
+        // )
+
+        // { id: mumbleId, accessToken: session?.data?.accessToken }
+        let data = await mutateFn(
+          { id: mumbleId, accessToken: session?.data?.accessToken },
+          postReply(
+            state.text,
+            state.file,
+            mumbleId,
+            session?.data?.accessToken
+          )
+        )
+        console.log(data)
+        setIsLoading(false)
+      }
+      dispatch({ type: 'reset_form' })
     }
   }
 
@@ -140,8 +194,8 @@ export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
           value={state.text}
         ></Textarea>
 
-        {state.file && <p className="pb-s">{state.file.name}</p>}
-        {state.hasError && (
+        {state.file && <p className="pb-s">Selected File: {state.file.name}</p>}
+        {state.showErrorMessage && (
           <p className="pb-s text-red-400 text-center">{state.errorMessage}</p>
         )}
 
@@ -162,7 +216,7 @@ export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
           <Button
             size={ButtonSize.medium}
             color={ButtonColor.violet}
-            label="Absenden"
+            label={isLoading ? 'senden...' : 'Absenden'}
             onClick={() => handleSubmit()}
           >
             <span className="ml-xs">

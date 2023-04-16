@@ -22,39 +22,25 @@ export default function MumblePage({
 }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
   const { data: session, status }: any = useSession()
 
-  // const {
-  //   data: mumble,
-  //   error,
-  //   isLoading
-  // } = useSingleMumblesWithUser(mumbleId, fallback)
-
   const {
     data: mumble,
+    error,
     isLoading,
     isValidating,
-    error
-  } = useSWR(
-    ['api', 'singleMumble', mumbleId, session?.accessToken],
-    ([var1, var2, mumbleId, token]) =>
-      fetchSingleMumbleWithUser(mumbleId, token)
-    // { fallback,}
-  )
-
-  if (isLoading) {
-    return <p>Loading</p>
-  }
-
-  // console.log(fallback)
+    mutate
+  } = useSingleMumblesWithUser(mumbleId, fallback)
 
   return (
+
     <div className="max-w-3xl mx-auto px-10 mb-s">
       {isLoading && <p>Is Loading</p>}
       {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
 
-      <WritePost />
+      <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
 
-      {mumble.responses.length > 0 &&
+      {mumble &&
+        mumble?.responses?.length > 0 &&
         mumble.responses.map((response, index) => (
           <MumbleCard mumble={response} key={`mumblereponse-${index}`} />
         ))}
@@ -69,27 +55,15 @@ export const getServerSideProps: GetServerSideProps = async ({
   const token = await getToken({ req })
   const mumbleId = query.id
 
-  const singleMumbleWithUser = await fetchSingleMumbleWithUser(
-    mumbleId,
-    token?.accessToken
-  )
+  const singleMumbleWithUser = await fetchSingleMumbleWithUser({
+    id: mumbleId,
+    accessToken: token?.accessToken
+  })
 
   return {
     props: {
       mumbleId,
-      fallback: {
-        [unstable_serialize([
-          'api',
-          'singleMumble',
-          mumbleId,
-          token?.accessToken
-        ])]: singleMumbleWithUser
-      }
-      // fallback: {
-      //   [unstable_serialize(() =>
-      //     getKey(mumbleId as string, token?.accessToken)
-      //   )]: singleMumbleWithUser
-      // }
+      fallback: singleMumbleWithUser
     }
   }
 }

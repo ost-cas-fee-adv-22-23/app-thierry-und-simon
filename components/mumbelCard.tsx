@@ -49,7 +49,6 @@ export const MumbleCard = ({ mumble }: Props) => {
             </div>
           )}
         </Link>
-
         {!isReply && isLoggedIn && <InteractionButtons post={mumble} />}
       </Card>
     </div>
