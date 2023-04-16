@@ -16,7 +16,7 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC, useReducer, useState } from 'react'
+import { FC, useEffect, useReducer, useState } from 'react'
 import { postMumble, postReply } from '../services/qwacker'
 import { MumbleType } from '../Types/Mumble'
 
@@ -37,15 +37,13 @@ const reducer = function (state, action) {
     case 'change_text': {
       return {
         ...state,
-        text: action.inputText,
-        hasError: false
+        text: action.inputText
       }
     }
     case 'change_file': {
       return {
         ...state,
-        file: action.inputFile,
-        hasError: false
+        file: action.inputFile
       }
     }
     case 'cancel_upload': {
@@ -67,7 +65,25 @@ const reducer = function (state, action) {
       return {
         ...state,
         hasError,
-        errorMessage
+        errorMessage,
+        showErrorMessage: false
+      }
+    }
+    case 'show_error_message': {
+      return {
+        ...state,
+        showErrorMessage: true
+      }
+    }
+    case 'reset_form': {
+      return {
+        ...state,
+        showErrorMessage: false,
+        modalIsOpen: false,
+        file: null,
+        text: '',
+        hasError: false,
+        errorMessage: ''
       }
     }
     default:
@@ -95,20 +111,23 @@ export const WritePost: FC<WriteMumbleProps> = ({
   const isReply = router.pathname.includes('/mumble/')
   const [isLoading, setIsLoading] = useState(false)
 
-  console.log(session)
-
   const [state, dispatch] = useReducer(reducer, {
     modalIsOpen: false,
     file: null,
     text: '',
     hasError: false,
-    errorMessage: ''
+    errorMessage: '',
+    showErrorMessage: false
   })
 
-  const handleSubmit = async () => {
+  useEffect(() => {
     dispatch({ type: 'validate_input' })
+  }, [state.text, state.file])
 
-    if (!state.hasError) {
+  const handleSubmit = async () => {
+    if (state.hasError) {
+      dispatch({ type: 'show_error_message' })
+    } else {
       if (!isReply) {
         setIsLoading(true)
         const res = await postMumble(
@@ -131,6 +150,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
         mutateFn({ ...mumble, responses: [...mumble.responses, res] })
         setIsLoading(false)
       }
+      dispatch({ type: 'reset_form' })
     }
   }
 
@@ -164,8 +184,8 @@ export const WritePost: FC<WriteMumbleProps> = ({
           value={state.text}
         ></Textarea>
 
-        {state.file && <p className="pb-s">{state.file.name}</p>}
-        {state.hasError && (
+        {state.file && <p className="pb-s">Selected File: {state.file.name}</p>}
+        {state.showErrorMessage && (
           <p className="pb-s text-red-400 text-center">{state.errorMessage}</p>
         )}
 
