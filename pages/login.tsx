@@ -51,27 +51,28 @@ export default function Home() {
           )}
 
           {!session && (
-            <Link
-              href="/"
-              onClick={() =>
-                signIn('zitadel', {
-                  callbackUrl: '/'
-                })
-              }
-            >
+            <div>
               <Button
                 size={ButtonSize.large}
                 color={ButtonColor.gradiant}
                 label="Let's Mumble"
+                onClick={() =>
+                  signIn('zitadel', {
+                    callbackUrl: '/'
+                  })
+                }
               />
-            </Link>
+            </div>
           )}
-          <Label type={LabelType.M}>
-            Noch nicht registriert?{' '}
-            <Link href="/register" className="text-violet-600 underline">
-              Jetzt registrieren
-            </Link>
-          </Label>
+          <div className="text-center">
+            <Label type={LabelType.M}>
+              Noch nicht registriert?
+              <br />
+              <Link href="/register" className="text-violet-600 underline">
+                Jetzt registrieren
+              </Link>
+            </Label>
+          </div>
         </section>
       </main>
     </>
