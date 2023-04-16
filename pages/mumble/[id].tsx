@@ -1,9 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-import fetchSingleMumble from '../../services/posts/singleMumble'
 import { WritePost } from '../../components/writePost'
 import { MumbleCard } from '../../components/mumbelCard'
-import useSWR, { unstable_serialize } from 'swr'
-import { useSession } from 'next-auth/react'
+import { unstable_serialize } from 'swr'
 import fetchSingleMumbleWithUser from '../../services/posts/singleMumbleWithUser'
 import {
   getKey,
@@ -19,7 +17,7 @@ export default function MumblePage({
   mumbleId,
   fallback
 }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
-  const { data: mumble, error, isLoading } = useSingleMumblesWithUser(mumbleId)
+  const { data: mumble, isLoading } = useSingleMumblesWithUser(mumbleId)
 
   if (mumble) {
     console.log(mumble)

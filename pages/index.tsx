@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
-import { unstable_serialize } from 'swr/infinite'
+import { SWRConfig } from 'swr'
 import {
   Button,
   ButtonColor,
@@ -11,14 +11,17 @@ import {
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 import { fetchMumblesWithUser } from '../services/postsService'
-import { getKey, useMumblesWithUser } from '../hooks/useMumblesWithUser'
+import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
 import { getToken } from 'next-auth/jwt'
 import { useEffect } from 'react'
 import { MumbleType } from '../Types/Mumble'
 
 export default function PageHome({ fallback }: any) {
-  const [mumbles, setMumbles] = useState<MumbleType[]>([])
-  const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(10)
+  const [mumbles, setMumbles] = useState<MumbleType[]>(fallback)
+  const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(
+    10,
+    fallback
+  )
 
   // Get Mumbles from data and make sure that Mumbles are not undefined
   function getMumblesFromData(data: any[] | undefined): MumbleType[] {
@@ -34,39 +37,39 @@ export default function PageHome({ fallback }: any) {
 
   // Set Mumbles when data changes, mainly for reloading additional mumbles
   useEffect(() => {
-    setMumbles(getMumblesFromData(data))
+    data && setMumbles(getMumblesFromData(data))
   }, [data])
-
-  console.log(fallback)
 
   return (
     <>
-      <div className="max-w-3xl mx-auto px-10 mb-s">
-        <div className="mb-xs text-violet-600">
-          <Header type={HeaderType.h1} style={HeaderType.h1}>
-            Willkommen auf Mumble
-          </Header>
+      <SWRConfig value={{ fallback }}>
+        <div className="max-w-3xl mx-auto px-10 mb-s">
+          <div className="mb-xs text-violet-600">
+            <Header type={HeaderType.h1} style={HeaderType.h1}>
+              Willkommen auf Mumble
+            </Header>
+          </div>
+          <div className="mb-l text-slate-500">
+            <Header type={HeaderType.h2} style={HeaderType.h4}>
+              Voluptatem qui cumque voluptatem quia tempora dolores distinctio
+              vel repellat dicta.
+            </Header>
+          </div>
+          <WritePost
+            data={getMumblesFromData(data)}
+            mutateFn={mutate}
+            count={getHighestCount(data)}
+          />
+          <Cards posts={mumbles} />
+          <Button
+            size={ButtonSize.medium}
+            color={ButtonColor.violet}
+            onClick={() => setSize(size + 1)}
+          >
+            {isValidating ? 'Loading...' : 'Mehr laden, JETZT!'}
+          </Button>
         </div>
-        <div className="mb-l text-slate-500">
-          <Header type={HeaderType.h2} style={HeaderType.h4}>
-            Voluptatem qui cumque voluptatem quia tempora dolores distinctio vel
-            repellat dicta.
-          </Header>
-        </div>
-        <WritePost
-          data={getMumblesFromData(data)}
-          mutateFn={mutate}
-          count={getHighestCount(data)}
-        />
-        <Cards posts={mumbles} />
-        <Button
-          size={ButtonSize.medium}
-          color={ButtonColor.violet}
-          onClick={() => setSize(size + 1)}
-        >
-          {isValidating ? 'Loading...' : 'Mehr laden, JETZT!'}
-        </Button>
-      </div>
+      </SWRConfig>
     </>
   )
 }
@@ -80,10 +83,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      fallback: {
-        [unstable_serialize(() => getKey(token?.accessToken, 0, 10))]:
-          initialMumbles
-      }
+      fallback: initialMumbles?.mumbles
     }
   }
 }

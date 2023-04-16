@@ -9,7 +9,6 @@ type Props = {
 }
 
 export const MumbleCard = ({ mumble }: Props) => {
-  console.log(mumble)
   return (
     <div className="mb-s">
       <Card
