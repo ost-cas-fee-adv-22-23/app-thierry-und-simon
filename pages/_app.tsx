@@ -1,6 +1,5 @@
 import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
-import { SWRConfig } from 'swr'
 import '../styles/globals.css'
 import { Layout } from '../components/layout/layout'
 
@@ -20,9 +19,5 @@ export default function App({
       )
     }
   }
-  return (
-    <SWRConfig value={pageProps.fallback}>
-      <SessionProvider session={session}>{getLayout()}</SessionProvider>
-    </SWRConfig>
-  )
+  return <SessionProvider session={session}>{getLayout()}</SessionProvider>
 }
