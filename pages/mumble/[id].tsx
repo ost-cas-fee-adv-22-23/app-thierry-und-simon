@@ -8,6 +8,8 @@ import {
   useSingleMumblesWithUser
 } from '../../hooks/useSingleMumbleWithUser'
 import { getToken } from 'next-auth/jwt'
+import { useSession } from 'next-auth/react'
+import useSWR from 'swr'
 
 type Props = {
   mumbleId: string
@@ -29,11 +31,12 @@ export default function MumblePage({
   const {
     data: mumble,
     isLoading,
+    isValidating,
     error
   } = useSWR(
-    [mumbleId, session?.accessToken],
-    ([mumbleId, accessToken]) =>
-      fetchSingleMumbleWithUser(mumbleId, accessToken),
+    ['api', 'singleMumble', mumbleId],
+    ([var1, var2, mumbleId]) =>
+      fetchSingleMumbleWithUser(mumbleId, session?.accessToken),
     { fallback }
   )
 
@@ -46,6 +49,7 @@ export default function MumblePage({
   return (
     <>
       {isLoading && <p>Is Loading</p>}
+      {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
       <WritePost />
 
@@ -73,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       mumbleId,
       fallback: {
-        [unstable_serialize([mumbleId, token?.accessToken])]:
+        [unstable_serialize(['api', 'singleMumble', mumbleId])]:
           singleMumbleWithUser
       }
       // fallback: {
