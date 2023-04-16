@@ -10,7 +10,7 @@ export const getKey = (mumbleId: string, token: any) => {
   return key
 }
 
-export const useSingleMumblesWithUser = (mumbleId: string) => {
+export const useSingleMumblesWithUser = (mumbleId: string, fallback: any) => {
   const { data: session }: any = useSession()
 
   const { data, isLoading, error } = useSWR(

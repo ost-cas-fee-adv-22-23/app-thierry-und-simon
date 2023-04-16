@@ -4,6 +4,7 @@ export const fetchSingleMumbleWithUser = async (
   id: string,
   accessToken: string
 ) => {
+  console.log(id)
   console.log(accessToken)
   try {
     const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${id}`
