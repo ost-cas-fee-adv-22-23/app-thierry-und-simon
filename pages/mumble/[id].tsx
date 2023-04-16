@@ -22,38 +22,21 @@ export default function MumblePage({
 }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
   const { data: session, status }: any = useSession()
 
-  // const {
-  //   data: mumble,
-  //   error,
-  //   isLoading
-  // } = useSingleMumblesWithUser(mumbleId, fallback)
-
   const {
     data: mumble,
+    error,
     isLoading,
     isValidating,
-    error,
     mutate
-  } = useSWR(
-    ['api', 'singleMumble', mumbleId],
-    ([var1, var2, mumbleId, token]) =>
-      fetchSingleMumbleWithUser(mumbleId, token),
-    { fallback }
-  )
+  } = useSingleMumblesWithUser(mumbleId, fallback)
 
-  if (isLoading) {
-    return <p>Loading</p>
-  }
-
-  // console.log(fallback)
+  console.log(fallback)
 
   return (
     <>
-      {isLoading && <p>Is Loading</p>}
-      {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
 
-      <WritePost mutate={mutate} mumbleId={mumble} />
+      <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
 
       {mumble.responses.length > 0 &&
         mumble.responses.map((response, index) => (
@@ -70,23 +53,15 @@ export const getServerSideProps: GetServerSideProps = async ({
   const token = await getToken({ req })
   const mumbleId = query.id
 
-  const singleMumbleWithUser = await fetchSingleMumbleWithUser(
-    mumbleId,
-    token?.accessToken
-  )
+  const singleMumbleWithUser = await fetchSingleMumbleWithUser({
+    id: mumbleId,
+    accessToken: token?.accessToken
+  })
 
   return {
     props: {
       mumbleId,
-      fallback: {
-        [unstable_serialize(['api', 'singleMumble', mumbleId])]:
-          singleMumbleWithUser
-      }
-      // fallback: {
-      //   [unstable_serialize(() =>
-      //     getKey(mumbleId as string, token?.accessToken)
-      //   )]: singleMumbleWithUser
-      // }
+      fallback: singleMumbleWithUser
     }
   }
 }

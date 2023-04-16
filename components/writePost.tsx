@@ -16,8 +16,8 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC, useReducer } from 'react'
-import { postMumble } from '../services/qwacker'
+import { FC, useReducer, useState } from 'react'
+import { postMumble, postReply } from '../services/qwacker'
 import { MumbleType } from '../Types/Mumble'
 
 const reducer = function (state, action) {
@@ -37,7 +37,7 @@ const reducer = function (state, action) {
     case 'change_text': {
       return {
         ...state,
-        text: action.inputText.trim(),
+        text: action.inputText,
         hasError: false
       }
     }
@@ -78,13 +78,22 @@ const reducer = function (state, action) {
 type WriteMumbleProps = {
   data: MumbleType[]
   mutateFn: any
-  count: number
+  count?: number
+  mumbleId?: string
+  mumble: any
 }
 
-export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
+export const WritePost: FC<WriteMumbleProps> = ({
+  data,
+  mutateFn,
+  count,
+  mumbleId,
+  mumble
+}) => {
   const session: any = useSession()
   const router = useRouter()
   const isReply = router.pathname.includes('/mumble/')
+  const [isLoading, setIsLoading] = useState(false)
 
   console.log(session)
 
@@ -100,13 +109,28 @@ export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
     dispatch({ type: 'validate_input' })
 
     if (!state.hasError) {
-      const res = await postMumble(
-        state.text,
-        state.file,
-        session?.data?.accessToken
-      )
-      mutateFn([{ count: count, mumbles: [...data, res] }])
-      console.log(res)
+      if (!isReply) {
+        setIsLoading(true)
+        const res = await postMumble(
+          state.text,
+          state.file,
+          session?.data?.accessToken
+        )
+        mutateFn([{ count: count, mumbles: [...data, res] }])
+        setIsLoading(false)
+      }
+      if (isReply) {
+        setIsLoading(true)
+        const res = await postReply(
+          state.text,
+          state.file,
+          mumbleId,
+          session?.data?.accessToken
+        )
+        console.log(res)
+        mutateFn({ ...mumble, responses: [...mumble.responses, res] })
+        setIsLoading(false)
+      }
     }
   }
 
@@ -162,7 +186,7 @@ export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
           <Button
             size={ButtonSize.medium}
             color={ButtonColor.violet}
-            label="Absenden"
+            label={isLoading ? 'senden...' : 'Absenden'}
             onClick={() => handleSubmit()}
           >
             <span className="ml-xs">
