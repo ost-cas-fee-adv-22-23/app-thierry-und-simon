@@ -32,12 +32,13 @@ export default function MumblePage({
     data: mumble,
     isLoading,
     isValidating,
-    error
+    error,
+    mutate
   } = useSWR(
-    ['api', 'singleMumble', mumbleId, session?.accessToken],
+    ['api', 'singleMumble', mumbleId],
     ([var1, var2, mumbleId, token]) =>
-      fetchSingleMumbleWithUser(mumbleId, token)
-    // { fallback,}
+      fetchSingleMumbleWithUser(mumbleId, token),
+    { fallback }
   )
 
   if (isLoading) {
@@ -52,7 +53,7 @@ export default function MumblePage({
       {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
 
-      <WritePost />
+      <WritePost mutate={mutate} mumbleId={mumble} />
 
       {mumble.responses.length > 0 &&
         mumble.responses.map((response, index) => (
@@ -78,12 +79,8 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       mumbleId,
       fallback: {
-        [unstable_serialize([
-          'api',
-          'singleMumble',
-          mumbleId,
-          token?.accessToken
-        ])]: singleMumbleWithUser
+        [unstable_serialize(['api', 'singleMumble', mumbleId])]:
+          singleMumbleWithUser
       }
       // fallback: {
       //   [unstable_serialize(() =>
