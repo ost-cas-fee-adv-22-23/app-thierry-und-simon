@@ -98,7 +98,7 @@ export const WritePost: FC<WriteMumbleProps> = ({ data, mutateFn, count }) => {
         state.file,
         session?.data?.accessToken
       )
-      mutateFn([{ count: count, mumbles: [...data, res] }])
+      mutateFn([{ count: count + 1, mumbles: [...data, res] }])
       console.log(res)
     }
   }

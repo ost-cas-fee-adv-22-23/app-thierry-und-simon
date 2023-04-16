@@ -6,7 +6,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['storage.googleapis.com'],
+    domains: ['storage.googleapis.com', 'picsum.photos'],
   }
 }
 

@@ -1,34 +1,54 @@
-import Profile from '../../components/profile'
-import { fetchProfile } from '../../services/qwacker'
-import { useSession } from 'next-auth/react'
+import { GetServerSideProps } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useMumblesWithUser } from '../../hooks/useMumblesWithUser'
+import { getMumblesFromData } from '../../utils/helperFunctions'
+import { fetchProfile } from '../../services/qwacker'
+import { fetchMumblesWithUser } from '../../services/postsService'
+import {
+  Button,
+  ButtonColor,
+  ButtonSize
+} from '@smartive-education/thierry-simon-mumble'
+import Profile from '../../components/profile'
+import { Cards } from '../../components/cards'
 
-export default function ProfilePage({ user }) {
-  const { data: session }: any = useSession()
-  const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(
+export default function ProfilePage({ user, initialMumbles }: any) {
+  const { data, size, setSize, isValidating } = useMumblesWithUser(
     10,
-    [],
-    '201402378124001537'
+    initialMumbles,
+    user.id
   )
-
-  console.log(data)
-  return <Profile user={user} />
+  console.log(user, initialMumbles)
+  return (
+    <>
+      <Profile user={user} />
+      <Cards posts={getMumblesFromData(data)} />
+      <Button
+        size={ButtonSize.medium}
+        color={ButtonColor.violet}
+        onClick={() => setSize(size + 1)}
+      >
+        {isValidating ? 'Loading...' : 'Mehr laden, JETZT!'}
+      </Button>
+    </>
+  )
 }
 
-export const getServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
-    console.log('get server side props')
-    const secret = process.env.NEXTAUTH_SECRET
-    console.log('token ' + secret)
-    const token = await getToken({ secret })
-    console.log('token ' + secret)
-    console.log({ token })
-    const userId = query.alias
+    const token = await getToken({ req: context.req })
+    const initialMumbles = await fetchMumblesWithUser({
+      accessToken: token?.accessToken as string,
+      offset: 0,
+      limit: 10,
+      creator: context.query.alias as string
+    })
+    const user = await fetchProfile(
+      token?.accessToken as string,
+      context.query.alias as string
+    )
 
-    const user = await fetchProfile(token?.accessToken, userId)
-
-    return { props: { user } }
+    return { props: { user, initialMumbles, fallback: initialMumbles } }
   } catch (error) {
     let message
     if (error instanceof Error) {
