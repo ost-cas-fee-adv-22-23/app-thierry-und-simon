@@ -1,9 +1,18 @@
 import Profile from '../../components/profile'
 import { fetchProfile } from '../../services/qwacker'
+import { useSession } from 'next-auth/react'
 import { getToken } from 'next-auth/jwt'
+import { useMumblesWithUser } from '../../hooks/useMumblesWithUser'
 
 export default function ProfilePage({ user }) {
-  console.log(user)
+  const { data: session }: any = useSession()
+  const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(
+    10,
+    [],
+    '201402378124001537'
+  )
+
+  console.log(data)
   return <Profile user={user} />
 }
 
