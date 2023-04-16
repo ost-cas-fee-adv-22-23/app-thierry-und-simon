@@ -31,7 +31,10 @@ export default function MumblePage({
   } = useSingleMumblesWithUser(mumbleId, fallback)
 
   return (
-    <>
+
+    <div className="max-w-3xl mx-auto px-10 mb-s">
+      {isLoading && <p>Is Loading</p>}
+      {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
 
       <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
@@ -41,7 +44,7 @@ export default function MumblePage({
         mumble.responses.map((response, index) => (
           <MumbleCard mumble={response} key={`mumblereponse-${index}`} />
         ))}
-    </>
+    </div>
   )
 }
 
