@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MumbleType } from '../Types/Mumble'
 import { InteractionButtons } from './interactionButtons'
+import { useSession } from 'next-auth/react'
 
 type Props = {
   mumble: MumbleType
@@ -10,26 +11,30 @@ type Props = {
 
 export const MumbleCard = ({ mumble }: Props) => {
   const isReply = mumble.type === 'reply'
+  const { data: session } = useSession()
+  const isLoggedIn = session
 
   return (
     <div className={!isReply ? 'mb-s' : 'mb-1'}>
       <Card
-        showProfileImage={isReply ? false : true}
+        showProfileImage={isReply || !isLoggedIn ? false : true}
         roundedBorders={isReply ? false : true}
         profileImageUrl={mumble.user?.avatarUrl}
       >
-        {mumble.user && (
+        {mumble.user && isLoggedIn && (
           <Link href={`/profile/${mumble.user?.id}`}>
-            <User
-              type={isReply ? SizeType.SM : SizeType.BASE}
-              userName={mumble.user?.userName}
-              fullName={`${mumble.user?.firstName} ${mumble.user?.lastName}`}
-              userImageSrc={mumble.user?.avatarUrl}
-            />
+            <div className="mb-m">
+              <User
+                type={isReply ? SizeType.SM : SizeType.BASE}
+                userName={mumble.user?.userName}
+                fullName={`${mumble.user?.firstName} ${mumble.user?.lastName}`}
+                userImageSrc={mumble.user?.avatarUrl}
+              />
+            </div>
           </Link>
         )}
         <Link href={`/mumble/${mumble.id}`}>
-          <p className="mt-m">{mumble.text}</p>
+          <p>{mumble.text}</p>
           {mumble.mediaUrl && (
             <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
               <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
@@ -45,7 +50,7 @@ export const MumbleCard = ({ mumble }: Props) => {
           )}
         </Link>
 
-        {!isReply && <InteractionButtons post={mumble} />}
+        {!isReply && isLoggedIn && <InteractionButtons post={mumble} />}
       </Card>
     </div>
   )

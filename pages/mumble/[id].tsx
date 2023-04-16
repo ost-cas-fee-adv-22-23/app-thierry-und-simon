@@ -47,7 +47,7 @@ export default function MumblePage({
   // console.log(fallback)
 
   return (
-    <>
+    <div className="max-w-3xl mx-auto px-10 mb-s">
       {isLoading && <p>Is Loading</p>}
       {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
@@ -58,7 +58,7 @@ export default function MumblePage({
         mumble.responses.map((response, index) => (
           <MumbleCard mumble={response} key={`mumblereponse-${index}`} />
         ))}
-    </>
+    </div>
   )
 }
 

@@ -54,13 +54,17 @@ export default function PageHome({ fallback }: any) {
           count={getHighestCount(data)}
         />
         <Cards posts={getMumblesFromData(data)} />
-        <Button
-          size={ButtonSize.medium}
-          color={ButtonColor.violet}
-          onClick={() => setSize(size + 1)}
-        >
-          {isValidating ? 'Loading...' : 'Mehr laden, JETZT!'}
-        </Button>
+        <div className="flex justify-center align-center py-m">
+          <div>
+            <Button
+              size={ButtonSize.large}
+              color={ButtonColor.violet}
+              onClick={() => setSize(size + 1)}
+            >
+              {isValidating ? 'Loading...' : 'Mehr laden!'}
+            </Button>
+          </div>
+        </div>
       </div>
     </>
   )
