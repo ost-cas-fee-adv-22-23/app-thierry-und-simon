@@ -34,29 +34,30 @@ export default function MumblePage({
     isValidating,
     error
   } = useSWR(
-    ['api', 'singleMumble', mumbleId],
-    ([var1, var2, mumbleId]) =>
-      fetchSingleMumbleWithUser(mumbleId, session?.accessToken),
-    { fallback }
+    ['api', 'singleMumble', mumbleId, session?.accessToken],
+    ([var1, var2, mumbleId, token]) =>
+      fetchSingleMumbleWithUser(mumbleId, token)
+    // { fallback,}
   )
 
-  if (mumble) {
-    console.log(mumble)
+  if (isLoading) {
+    return <p>Loading</p>
   }
 
-  console.log(fallback)
+  // console.log(fallback)
 
   return (
     <>
       {isLoading && <p>Is Loading</p>}
       {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
+
       <WritePost />
 
-      {/* {responses.length > 0 &&
-        responses.map((response, index) => (
+      {mumble.responses.length > 0 &&
+        mumble.responses.map((response, index) => (
           <MumbleCard mumble={response} key={`mumblereponse-${index}`} />
-        ))} */}
+        ))}
     </>
   )
 }
@@ -77,8 +78,12 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       mumbleId,
       fallback: {
-        [unstable_serialize(['api', 'singleMumble', mumbleId])]:
-          singleMumbleWithUser
+        [unstable_serialize([
+          'api',
+          'singleMumble',
+          mumbleId,
+          token?.accessToken
+        ])]: singleMumbleWithUser
       }
       // fallback: {
       //   [unstable_serialize(() =>
