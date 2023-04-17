@@ -11,9 +11,7 @@ import { WritePost } from '../components/writePost'
 import { fetchMumblesWithUser } from '../services/postsService'
 import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
 import { getToken } from 'next-auth/jwt'
-
-import { MumbleType } from '../Types/Mumble'
-import { useSession } from 'next-auth/react'
+import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
 
 export default function PageHome({ fallback }: any) {
   const { data: session } = useSession()
@@ -22,20 +20,6 @@ export default function PageHome({ fallback }: any) {
     10,
     fallback
   )
-
-  // Get Mumbles from data and make sure that Mumbles are not undefined
-  function getMumblesFromData(data: any[] | undefined): MumbleType[] {
-    if (!data) return []
-    return data.map((d) => (d ? d.mumbles : [])).flat()
-  }
-
-  // get highest count from all arrays
-  function getHighestCount(data: any[] | undefined): number {
-    if (!data) return 0
-    return data.map((d) => (d ? d.count : 0)).reduce((a, b) => Math.max(a, b))
-  }
-
-  console.log(data, fallback)
 
   return (
     <>
