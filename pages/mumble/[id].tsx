@@ -1,10 +1,8 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { WritePost } from '../../components/writePost'
 import { MumbleCard } from '../../components/mumbelCard'
-
 import { useSingleMumblesWithUser } from '../../hooks/useSingleMumbleWithUser'
 import { getToken } from 'next-auth/jwt'
-import { useSession } from 'next-auth/react'
 import { fetchSingleMumbleWithUser } from '../../services/queries'
 
 type Props = {
@@ -16,13 +14,9 @@ export default function MumblePage({
   mumbleId,
   fallback
 }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
-  const { data: session, status }: any = useSession()
-
   const {
     data: mumble,
-    error,
-    isLoading,
-    isValidating,
+
     mutate
   } = useSingleMumblesWithUser(mumbleId, fallback)
 

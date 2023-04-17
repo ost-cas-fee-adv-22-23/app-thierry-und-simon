@@ -103,8 +103,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
   data,
   mutateFn,
   count,
-  mumbleId,
-  mumble
+  mumbleId
 }) => {
   const session: any = useSession()
   const router = useRouter()
@@ -148,7 +147,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
         // )
 
         // { id: mumbleId, accessToken: session?.data?.accessToken }
-        let data = await mutateFn(
+        const data = await mutateFn(
           { id: mumbleId, accessToken: session?.data?.accessToken },
           postReply(
             state.text,
