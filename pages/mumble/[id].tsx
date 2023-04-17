@@ -35,7 +35,6 @@ export default function MumblePage({
       {mumble && <MumbleCard mumble={mumble} />}
 
       <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
-
       {mumble &&
         mumble?.responses?.length > 0 &&
         mumble.responses.map((response, index) => (
