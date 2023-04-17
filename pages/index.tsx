@@ -12,6 +12,7 @@ import { fetchMumblesWithUser } from '../services/postsService'
 import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
 import { getToken } from 'next-auth/jwt'
 import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
+import { useSession } from 'next-auth/react'
 
 export default function PageHome({ fallback }: any) {
   const { data: session } = useSession()
