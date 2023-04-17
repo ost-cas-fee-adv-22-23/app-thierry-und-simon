@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react'
-import fetchSingleMumbleWithUser from '../services/posts/singleMumbleWithUser'
+
 import useSWR from 'swr'
+import { fetchSingleMumbleWithUser } from '../services/queries'
 
 export const useSingleMumblesWithUser = (mumbleId: string, fallback: any) => {
   const { data: session }: any = useSession()

@@ -17,8 +17,8 @@ import {
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useReducer, useState } from 'react'
-import { postMumble, postReply } from '../services/qwacker'
-import { MumbleType } from '../Types/Mumble'
+import { postMumble, postReply } from '../services/mutations'
+import { MumbleType } from '../types/Mumble'
 
 const reducer = function (state, action) {
   switch (action.type) {

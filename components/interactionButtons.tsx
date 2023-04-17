@@ -5,7 +5,7 @@ import {
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { likeMumble, unLikeMumble } from '../services/qwacker'
+import { likeMumble, unLikeMumble } from '../services/mutations'
 
 export const InteractionButtons = ({ post }: any) => {
   const { data: session }: any = useSession()

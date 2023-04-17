@@ -1,6 +1,6 @@
 import useSWRInfinite from 'swr/infinite'
 import { useSession } from 'next-auth/react'
-import { fetchMumblesWithUser } from '../services/postsService'
+import { fetchMumblesWithUser } from '../services/queries'
 
 export const getKey = (session: any, index: number, pageLimit: number) => {
   return {

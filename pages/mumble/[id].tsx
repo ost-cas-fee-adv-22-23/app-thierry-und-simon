@@ -1,15 +1,11 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { WritePost } from '../../components/writePost'
 import { MumbleCard } from '../../components/mumbelCard'
-import { unstable_serialize } from 'swr'
-import fetchSingleMumbleWithUser from '../../services/posts/singleMumbleWithUser'
-import {
-  getKey,
-  useSingleMumblesWithUser
-} from '../../hooks/useSingleMumbleWithUser'
+
+import { useSingleMumblesWithUser } from '../../hooks/useSingleMumbleWithUser'
 import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
-import useSWR from 'swr'
+import { fetchSingleMumbleWithUser } from '../../services/queries'
 
 type Props = {
   mumbleId: string
@@ -31,10 +27,7 @@ export default function MumblePage({
   } = useSingleMumblesWithUser(mumbleId, fallback)
 
   return (
-
     <div className="max-w-3xl mx-auto px-10 mb-s">
-      {isLoading && <p>Is Loading</p>}
-      {isValidating && <p>Is validating</p>}
       {mumble && <MumbleCard mumble={mumble} />}
 
       <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
