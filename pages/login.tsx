@@ -9,7 +9,7 @@ import {
   Label,
   LabelType
 } from '@smartive-education/thierry-simon-mumble'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
