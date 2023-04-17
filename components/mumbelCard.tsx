@@ -1,7 +1,7 @@
 import { Card, SizeType, User } from '@smartive-education/thierry-simon-mumble'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MumbleType } from '../Types/Mumble'
+import { MumbleType } from '../types/Mumble'
 import { InteractionButtons } from './interactionButtons'
 import { useSession } from 'next-auth/react'
 

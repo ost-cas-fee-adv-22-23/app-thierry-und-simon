@@ -17,8 +17,8 @@ import {
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useReducer, useState } from 'react'
-import { postMumble, postReply } from '../services/qwacker'
-import { MumbleType } from '../Types/Mumble'
+import { postMumble, postReply } from '../services/mutations'
+import { MumbleType } from '../types/Mumble'
 
 const reducer = function (state, action) {
   switch (action.type) {
@@ -103,8 +103,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
   data,
   mutateFn,
   count,
-  mumbleId,
-  mumble
+  mumbleId
 }) => {
   const session: any = useSession()
   const router = useRouter()
@@ -148,7 +147,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
         // )
 
         // { id: mumbleId, accessToken: session?.data?.accessToken }
-        let data = await mutateFn(
+        const data = await mutateFn(
           { id: mumbleId, accessToken: session?.data?.accessToken },
           postReply(
             state.text,

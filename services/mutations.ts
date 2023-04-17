@@ -1,44 +1,5 @@
-import { decodeTime } from 'ulid'
-import { MumbleType } from '../Types/Mumble'
-
-type RawMumble = Omit<MumbleType, 'createdTimestamp'>
-
-type QwackerMumbleResponse = {
-  count: number
-  data: RawMumble[]
-}
-
-export type UploadImage = File & { preview: string }
-
-export const fetchMumbles = async (params?: {
-  limit?: number
-  offset?: number
-  newerThanMumbleId?: string
-}) => {
-  const { limit, offset, newerThanMumbleId } = params || {}
-
-  const url = `${
-    process.env.NEXT_PUBLIC_QWACKER_API_URL
-  }/posts?${new URLSearchParams({
-    limit: limit?.toString() || '10',
-    offset: offset?.toString() || '0',
-    newerThan: newerThanMumbleId || ''
-  })}`
-
-  const res = await fetch(url, {
-    headers: {
-      'content-type': 'application/json'
-    }
-  })
-  const { count, data } = (await res.json()) as QwackerMumbleResponse
-
-  const mumbles = data.map(transformMumble)
-
-  return {
-    count,
-    mumbles
-  }
-}
+import { UploadImage } from '../types/Mumble'
+import { transformMumble } from '../utils/helperFunctions'
 
 export const postMumble = async (
   text: string,
@@ -117,25 +78,6 @@ export const postReply = async (
       error instanceof Error ? error.message : 'Could not post reply'
     )
   }
-}
-
-const transformMumble = (mumble: RawMumble) => ({
-  ...mumble,
-  createdTimestamp: decodeTime(mumble.id)
-})
-
-export const fetchProfile = async (accessToken: string, id: string) => {
-  const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`
-
-  const res = await fetch(url, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'content-type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
-    }
-  })
-  const user = await res.json()
-  return user
 }
 
 export const likeMumble = async (accessToken: string, mumbleId: string) => {

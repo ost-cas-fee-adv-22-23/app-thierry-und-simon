@@ -8,11 +8,12 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
-import { fetchMumblesWithUser } from '../services/postsService'
+
 import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
 import { getToken } from 'next-auth/jwt'
 import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
 import { useSession } from 'next-auth/react'
+import { fetchMumblesWithUser } from '../services/queries'
 
 export default function PageHome({ fallback }: any) {
   const { data: session } = useSession()

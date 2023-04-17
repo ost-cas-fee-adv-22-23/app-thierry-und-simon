@@ -2,8 +2,7 @@ import { GetServerSideProps } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useMumblesWithUser } from '../../hooks/useMumblesWithUser'
 import { getMumblesFromData } from '../../utils/helperFunctions'
-import { fetchProfile } from '../../services/qwacker'
-import { fetchMumblesWithUser } from '../../services/postsService'
+
 import {
   Button,
   ButtonColor,
@@ -11,6 +10,7 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import Profile from '../../components/profile'
 import { Cards } from '../../components/cards'
+import { fetchMumblesWithUser, fetchProfile } from '../../services/queries'
 
 export default function ProfilePage({ user, initialMumbles }: any) {
   const { data, size, setSize, isValidating } = useMumblesWithUser(

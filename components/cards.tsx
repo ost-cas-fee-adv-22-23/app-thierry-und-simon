@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { MumbleType } from '../Types/Mumble'
+import { MumbleType } from '../types/Mumble'
 import { MumbleCard } from './mumbelCard'
 
 type CardsProps = {

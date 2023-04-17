@@ -20,3 +20,19 @@ export type QwackerMumbleResponse = {
   count: number
   data: RawMumble[]
 }
+
+export type UploadImage = File & { preview: string }
+
+export type Response = {
+  id: string
+  creator: string
+  text: string
+  mediaUrl: string
+  mediaType: string
+  likeCount: number
+  likedByUser: boolean
+  type: string
+  replyCount: number
+  createdTimestamp: number
+  user?: UserType
+}
