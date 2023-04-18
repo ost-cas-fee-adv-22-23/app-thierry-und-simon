@@ -29,6 +29,7 @@ export const MumbleCard = ({ mumble }: Props) => {
                 userName={mumble.user?.userName}
                 fullName={`${mumble.user?.firstName} ${mumble.user?.lastName}`}
                 userImageSrc={mumble.user?.avatarUrl}
+                datePosted={mumble.createdTimestamp}
               />
             </div>
           </Link>
