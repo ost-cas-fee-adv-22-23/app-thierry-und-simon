@@ -24,11 +24,11 @@ export default function ProfilePage({ user, initialMumbles }: any) {
       <Profile user={user} />
       <Cards posts={getMumblesFromData(data)} />
       <Button
-        size={ButtonSize.medium}
+        size={ButtonSize.large}
         color={ButtonColor.violet}
         onClick={() => setSize(size + 1)}
       >
-        {isValidating ? 'Loading...' : 'Mehr laden, JETZT!'}
+        {isValidating ? 'Loading...' : 'Mehr laden!'}
       </Button>
     </>
   )
