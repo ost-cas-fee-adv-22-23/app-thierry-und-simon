@@ -1,3 +1,4 @@
+import { KeyedMutator } from 'swr'
 import { UserType } from './User'
 
 export type MumbleType = {
@@ -35,4 +36,11 @@ export type Response = {
   replyCount: number
   createdTimestamp: number
   user?: UserType
+}
+
+export type WriteMumbleProps = {
+  data: MumbleType[]
+  mutateFn: KeyedMutator<any[]>
+  count?: number
+  mumbleId?: string
 }

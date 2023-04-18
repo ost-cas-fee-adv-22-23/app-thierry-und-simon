@@ -51,7 +51,7 @@ export default function Home() {
                 label="Let's Mumble"
                 onClick={() =>
                   signIn('zitadel', {
-                    callbackUrl: '/'
+                    callbackUrl: '/timeline'
                   })
                 }
               />

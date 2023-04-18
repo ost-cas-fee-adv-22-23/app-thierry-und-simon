@@ -5,7 +5,7 @@ import {
   UserImageSizeType,
   SizeType
 } from '@smartive-education/thierry-simon-mumble'
-import { UserType } from '../types/User'
+import { UserType } from '../types/tem'
 
 export default function Profile({ user }: { user: UserType }) {
   return (

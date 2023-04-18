@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { MumbleType } from '../types/Mumble'
 import { InteractionButtons } from './interactionButtons'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 type Props = {
   mumble: MumbleType
@@ -13,6 +14,8 @@ export const MumbleCard = ({ mumble }: Props) => {
   const isReply = mumble.type === 'reply'
   const { data: session } = useSession()
   const isLoggedIn = session
+  const router = useRouter()
+  const path = router.pathname === '/timeline' ? 'timeline' : 'mumble'
 
   return (
     <div className={!isReply ? 'mb-s' : 'mb-1'}>
@@ -33,7 +36,7 @@ export const MumbleCard = ({ mumble }: Props) => {
             </div>
           </Link>
         )}
-        <Link href={`/mumble/${mumble.id}`}>
+        <Link href={`/${path}/${mumble.id}`}>
           <p>{mumble.text}</p>
           {mumble.mediaUrl && (
             <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">

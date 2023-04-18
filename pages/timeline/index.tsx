@@ -1,6 +1,13 @@
-import { GetStaticProps } from 'next'
-import { useEffect, useLayoutEffect } from 'react'
-import Router from 'next/router'
+import { useSession } from 'next-auth/react'
+import { getToken } from 'next-auth/jwt'
+import { fetchMumblesWithUser } from '../../services/queries'
+import { GetServerSideProps } from 'next'
+import {
+  getMumblesFromData,
+  getHighestCount
+} from '../../utils/helperFunctions'
+import { indexRedirect } from '../../middleware/redirects'
+import { useMumblesWithUser } from '../../hooks/useMumblesWithUser'
 import {
   Button,
   ButtonColor,
@@ -8,22 +15,16 @@ import {
   Header,
   HeaderType
 } from '@smartive-education/thierry-simon-mumble'
-import { Cards } from '../components/cards'
-import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
-import { getMumblesFromData } from '../utils/helperFunctions'
-import { useSession } from 'next-auth/react'
-import { fetchMumbles } from '../services/queries'
+import { Cards } from '../../components/cards'
+import { WritePost } from '../../components/writePost'
 
 export default function PageHome({ fallback }: any) {
   const { data: session } = useSession()
-  useLayoutEffect(() => {
-    if (session) {
-      Router.push('/timeline')
-    }
-  }, [session])
-  console.log(session)
 
-  const { data, size, setSize, isValidating } = useMumblesWithUser(10, fallback)
+  const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(
+    10,
+    fallback
+  )
 
   return (
     <>
@@ -39,6 +40,13 @@ export default function PageHome({ fallback }: any) {
             repellat dicta.
           </Header>
         </div>
+        {session && (
+          <WritePost
+            data={getMumblesFromData(data)}
+            mutateFn={mutate}
+            count={getHighestCount(data)}
+          />
+        )}
         <Cards posts={getMumblesFromData(data)} />
         <div className="flex justify-center align-center py-m">
           <div>
@@ -55,24 +63,20 @@ export default function PageHome({ fallback }: any) {
     </>
   )
 }
-export const getStaticProps: GetStaticProps = async () => {
-  try {
-    const initialMumbles = await fetchMumbles({ limit: 100 })
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const token = await getToken({ req })
 
-    return {
-      props: {
-        fallback: initialMumbles
-      },
-      revalidate: 60
-    }
-  } catch (error) {
-    let message
-    if (error instanceof Error) {
-      message = error.message
-    } else {
-      message = String(error)
-    }
+  if (!token) return indexRedirect
 
-    return { props: { error: message, mumbles: [], count: 0 } }
+  const initialMumbles = await fetchMumblesWithUser({
+    accessToken: token?.accessToken as string,
+    offset: 0,
+    limit: 10
+  })
+
+  return {
+    props: {
+      fallback: initialMumbles
+    }
   }
 }

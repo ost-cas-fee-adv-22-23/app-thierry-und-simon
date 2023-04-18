@@ -1,4 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
+import { WritePost } from '../../components/writePost'
 import { MumbleCard } from '../../components/mumbelCard'
 import { useSingleMumblesWithUser } from '../../hooks/useSingleMumbleWithUser'
 import { getToken } from 'next-auth/jwt'
@@ -13,11 +14,17 @@ export default function MumblePage({
   mumbleId,
   fallback
 }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
-  const { data: mumble } = useSingleMumblesWithUser(mumbleId, fallback)
+  const {
+    data: mumble,
+
+    mutate
+  } = useSingleMumblesWithUser(mumbleId, fallback)
 
   return (
     <div className="max-w-3xl mx-auto px-10 mb-s">
       {mumble && <MumbleCard mumble={mumble} />}
+
+      <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
 
       {mumble &&
         mumble?.responses?.length > 0 &&
