@@ -5,10 +5,9 @@ import type { NextRequest } from 'next/server'
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req })
 
-  if (!token) {
-    if (req.nextUrl.pathname === '/') {
-      return NextResponse.rewrite(`${req.nextUrl.origin}/mk-timeline`)
-    }
+  if (!token && req.nextUrl.pathname === '/') {
+    return NextResponse.rewrite(`${req.nextUrl.origin}/mk-timeline`)
   }
+
   return NextResponse.next()
 }
