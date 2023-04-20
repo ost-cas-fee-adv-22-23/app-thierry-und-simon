@@ -11,8 +11,15 @@ import {
 import Profile from '../../components/profile'
 import { Cards } from '../../components/cards'
 import { fetchMumblesWithUser, fetchProfile } from '../../services/queries'
+import { MumbleType } from '../../types/Mumble'
+import { UserType } from '../../types/User'
 
-export default function ProfilePage({ user, initialMumbles }: any) {
+type ProfilPageProps = {
+  user: UserType
+  initialMumbles: MumbleType[]
+}
+
+export default function ProfilePage({ user, initialMumbles }: ProfilPageProps) {
   const { data, size, setSize, isValidating } = useMumblesWithUser(
     10,
     initialMumbles,
@@ -44,8 +51,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       creator: context.query.alias as string
     })
     const user = await fetchProfile(
-      token?.accessToken as string,
-      context.query.alias as string
+      context.query.alias as string,
+      token?.accessToken as string
     )
 
     return { props: { user, initialMumbles, fallback: initialMumbles } }

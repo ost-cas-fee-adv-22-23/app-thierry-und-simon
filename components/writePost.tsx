@@ -105,7 +105,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
   count,
   mumbleId
 }) => {
-  const session: any = useSession()
+  const session = useSession()
   const router = useRouter()
   const isReply = router.pathname.includes('/mumble/')
   const [isLoading, setIsLoading] = useState(false)

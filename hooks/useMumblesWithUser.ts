@@ -1,8 +1,9 @@
 import useSWRInfinite from 'swr/infinite'
 import { useSession } from 'next-auth/react'
 import { fetchMumblesWithUser } from '../services/queries'
+import { Session } from 'next-auth'
 
-export const getKey = (session: any, index: number, pageLimit: number) => {
+export const getKey = (session: Session, index: number, pageLimit: number) => {
   return {
     toeken: session.accessToken,
     offset: index * pageLimit,
@@ -12,14 +13,14 @@ export const getKey = (session: any, index: number, pageLimit: number) => {
 
 export const useMumblesWithUser = (
   pageLimit: number,
-  fallback: any,
+  fallback: unknown,
   creator?: string
 ) => {
-  const { data: session }: any = useSession()
+  const { data: session } = useSession()
 
   const getKey = (index: number) => {
     const key = {
-      accessToken: session.accessToken,
+      accessToken: session?.accessToken,
       offset: index * pageLimit,
       index: index,
       creator: creator

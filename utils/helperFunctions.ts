@@ -1,5 +1,5 @@
 import { decodeTime } from 'ulid'
-import { MumbleType } from '../types/Mumble'
+import { MumbleType, RawMumble } from '../types/Mumble'
 
 // Get Mumbles from data and make sure that Mumbles are not undefined
 export function getMumblesFromData(data: any[] | undefined): MumbleType[] {

@@ -15,7 +15,7 @@ import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
 import { useSession } from 'next-auth/react'
 import { fetchMumblesWithUser } from '../services/queries'
 
-export default function PageHome({ fallback }: any) {
+export default function PageHome({ fallback }: { fallback: unknown }) {
   const { data: session } = useSession()
 
   const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(
@@ -63,7 +63,7 @@ export default function PageHome({ fallback }: any) {
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const token = await getToken({ req })
   const initialMumbles = await fetchMumblesWithUser({
-    accessToken: token?.accessToken as string,
+    accessToken: token?.accessToken,
     offset: 0,
     limit: 10
   })
