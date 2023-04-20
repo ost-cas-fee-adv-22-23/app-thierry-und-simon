@@ -7,7 +7,17 @@ const nextConfig = {
   },
   images: {
     domains: ['storage.googleapis.com', 'picsum.photos'],
+  },
+  async redirects() {
+    return [
+      {
+        source: '/mk-timeline',
+        destination: '/',
+        permanent: true,
+      },
+    ]
   }
 }
+
 
 module.exports = nextConfig
