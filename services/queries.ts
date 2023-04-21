@@ -35,6 +35,20 @@ export const fetchSingleMumbleWithUser = async ({
   }
 }
 
+export const fetchSingleMumble = async (id: string) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${id}`
+    const res = await fetch(url)
+    const mumble = await res.json()
+    const responses = await fetchResponseToMumble(id)
+    mumble.responses = responses
+
+    return mumble
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const fetchMumbles = async (params?: {
   limit?: number
   offset?: number | string
@@ -100,7 +114,7 @@ export const fetchResponseToMumble = async (id: string) => {
     const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${id}/replies`
     const res = await fetch(url)
     const responses = await res.json()
-    console.log(responses)
+    console.log(url)
     return responses
   } catch (error) {
     console.log(error)
