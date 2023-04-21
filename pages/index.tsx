@@ -14,14 +14,16 @@ import { getToken } from 'next-auth/jwt'
 import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
 import { useSession } from 'next-auth/react'
 import { fetchMumblesWithUser } from '../services/queries'
+import { LoadingSpinner } from '../components/loadingSpinner'
+import { MumbleType } from '../types/Mumble'
 
-export default function PageHome({ fallback }: { fallback: unknown }) {
+export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
   const { data: session } = useSession()
 
-  const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(
-    10,
-    fallback
-  )
+  const { data, size, setSize, isValidating, mutate, isLoading } =
+    useMumblesWithUser(10, fallback)
+
+  console.log(data, fallback, isLoading, isValidating)
 
   return (
     <>
@@ -47,13 +49,17 @@ export default function PageHome({ fallback }: { fallback: unknown }) {
         <Cards posts={getMumblesFromData(data)} />
         <div className="flex justify-center align-center py-m">
           <div>
-            <Button
-              size={ButtonSize.large}
-              color={ButtonColor.violet}
-              onClick={() => setSize(size + 1)}
-            >
-              {isValidating ? 'Loading...' : 'Mehr laden!'}
-            </Button>
+            {isValidating ? (
+              <LoadingSpinner />
+            ) : (
+              <Button
+                size={ButtonSize.large}
+                color={ButtonColor.violet}
+                onClick={() => setSize(size + 1)}
+              >
+                Mehr laden!
+              </Button>
+            )}
           </div>
         </div>
       </div>
