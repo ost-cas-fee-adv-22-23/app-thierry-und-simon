@@ -1,13 +1,21 @@
-import { MumbleType, QwackerMumbleResponse } from '../types/Mumble'
+import {
+  MumbleType,
+  QwackerMumbleResponse,
+  FetchMumblePropsType,
+  FetchSingleMumbleWithUserPropsType
+} from '../types/Mumble'
 import { transformMumble } from '../utils/helperFunctions'
 
-export const fetchSingleMumbleWithUser = async ({ id, accessToken }: any) => {
+export const fetchSingleMumbleWithUser = async ({
+  id,
+  accessToken
+}: FetchSingleMumbleWithUserPropsType) => {
   try {
     const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${id}`
     const res = await fetch(url)
     const mumble = await res.json()
 
-    const user = await fetchProfile(accessToken, mumble.creator)
+    const user = await fetchProfile(mumble.creator, accessToken)
     mumble.user = user
 
     const responses = await fetchResponseToMumble(id)
@@ -16,7 +24,7 @@ export const fetchSingleMumbleWithUser = async ({ id, accessToken }: any) => {
     let index = 0
     for await (const response of responses) {
       console.log(response)
-      const user = await fetchProfile(accessToken, response.creator)
+      const user = await fetchProfile(response.creator, accessToken)
       mumble.responses[index].user = user
       index++
     }
@@ -64,7 +72,7 @@ export const fetchMumblesWithUser = async ({
   offset,
   limit,
   creator
-}: any) => {
+}: FetchMumblePropsType) => {
   try {
     const { count, mumbles } = await fetchMumbles({
       offset,
@@ -73,7 +81,7 @@ export const fetchMumblesWithUser = async ({
     })
     const mumblesWithUser = await Promise.all(
       mumbles.map(async (mumble: MumbleType) => {
-        const user = await fetchProfile(accessToken, mumble.creator)
+        const user = await fetchProfile(mumble.creator, accessToken)
         mumble.user = user
         return mumble
       })
@@ -99,7 +107,7 @@ export const fetchResponseToMumble = async (id: string) => {
   }
 }
 
-export const fetchProfile = async (accessToken: string, id: string) => {
+export const fetchProfile = async (id: string, accessToken?: string) => {
   const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`
 
   const res = await fetch(url, {

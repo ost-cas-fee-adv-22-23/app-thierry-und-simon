@@ -80,7 +80,7 @@ export const postReply = async (
   }
 }
 
-export const likeMumble = async (accessToken: string, mumbleId: string) => {
+export const likeMumble = async (mumbleId: string, accessToken?: string) => {
   if (!accessToken) {
     throw new Error('No access token')
   }
@@ -107,7 +107,7 @@ export const likeMumble = async (accessToken: string, mumbleId: string) => {
   }
 }
 
-export const unLikeMumble = async (accessToken: string, mumbleId: string) => {
+export const unLikeMumble = async (mumbleId: string, accessToken?: string) => {
   if (!accessToken) {
     throw new Error('No access token')
   }

@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next'
+import { GetStaticProps } from 'next'
 import {
   Button,
   ButtonColor,
@@ -6,14 +6,15 @@ import {
   Header,
   HeaderType
 } from '@smartive-education/thierry-simon-mumble'
-import { Cards } from '../components/cards'
-import { WritePost } from '../components/writePost'
-
-import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
-import { getToken } from 'next-auth/jwt'
-import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
+import { Cards } from '../../components/cards'
+import { WritePost } from '../../components/writePost'
+import { useMumblesWithUser } from '../../hooks/useMumblesWithUser'
+import {
+  getMumblesFromData,
+  getHighestCount
+} from '../../utils/helperFunctions'
 import { useSession } from 'next-auth/react'
-import { fetchMumblesWithUser } from '../services/queries'
+import { fetchMumbles } from '../../services/queries'
 
 export default function PageHome({ fallback }: { fallback: unknown }) {
   const { data: session } = useSession()
@@ -34,7 +35,7 @@ export default function PageHome({ fallback }: { fallback: unknown }) {
         <div className="mb-l text-slate-500">
           <Header type={HeaderType.h2} style={HeaderType.h4}>
             Voluptatem qui cumque voluptatem quia tempora dolores distinctio vel
-            repellat dicta.
+            repellat dicta. HELLO MK
           </Header>
         </div>
         {session && (
@@ -60,17 +61,24 @@ export default function PageHome({ fallback }: { fallback: unknown }) {
     </>
   )
 }
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const token = await getToken({ req })
-  const initialMumbles = await fetchMumblesWithUser({
-    accessToken: token?.accessToken,
-    offset: 0,
-    limit: 10
-  })
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const initialMumbles = await fetchMumbles({ limit: 100 })
 
-  return {
-    props: {
-      fallback: initialMumbles
+    return {
+      props: {
+        fallback: initialMumbles
+      },
+      revalidate: 60
     }
+  } catch (error) {
+    let message
+    if (error instanceof Error) {
+      message = error.message
+    } else {
+      message = String(error)
+    }
+
+    return { props: { error: message, mumbles: [], count: 0 } }
   }
 }

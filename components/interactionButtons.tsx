@@ -6,18 +6,19 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { likeMumble, unLikeMumble } from '../services/mutations'
+import { MumbleType } from '../types/Mumble'
 
-export const InteractionButtons = ({ post }: any) => {
-  const { data: session }: any = useSession()
+export const InteractionButtons = ({ post }: { post: MumbleType }) => {
+  const { data: session } = useSession()
   const router = useRouter()
   const [hasLiked] = useState(post.likedByUser)
 
   const handleLike = async () => {
     if (!hasLiked) {
-      const res = await likeMumble(session.accessToken, post.id)
+      const res = await likeMumble(post.id, session?.accessToken)
       console.log(res)
     } else {
-      const res = await unLikeMumble(session.accessToken, post.id)
+      const res = await unLikeMumble(post.id, session?.accessToken)
       console.log(res)
     }
   }

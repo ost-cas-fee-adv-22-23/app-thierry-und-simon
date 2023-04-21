@@ -7,7 +7,7 @@ import { fetchSingleMumbleWithUser } from '../../services/queries'
 
 type Props = {
   mumbleId: string
-  fallback: any
+  fallback: unknown
 }
 
 export default function MumblePage({

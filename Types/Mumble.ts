@@ -36,3 +36,15 @@ export type Response = {
   createdTimestamp: number
   user?: UserType
 }
+
+export type FetchMumblePropsType = {
+  accessToken?: string
+  offset: number
+  limit: number
+  creator?: string
+}
+
+export type FetchSingleMumbleWithUserPropsType = {
+  id: string
+  accessToken?: string
+}

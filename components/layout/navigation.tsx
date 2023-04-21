@@ -1,5 +1,6 @@
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Header,
   HeaderType,
@@ -29,14 +30,18 @@ export const Navigation = () => {
             {session && (
               <>
                 <li>
-                  <div className="rounded-full bg-purple-700 h-10 w-10 overflow-hidden">
-                    {session?.user?.avatarUrl && (
-                      <img
-                        src={session?.user?.avatarUrl}
-                        alt={session?.user?.name || 'User'}
-                      />
-                    )}
-                  </div>
+                  <Link href={`profile/${session.user.id}`}>
+                    <div className="rounded-full bg-purple-700 h-10 w-10 overflow-hidden">
+                      {session?.user?.avatarUrl && (
+                        <Image
+                          src={session?.user?.avatarUrl}
+                          alt={session?.user?.name || 'User'}
+                          width={40}
+                          height={40}
+                        />
+                      )}
+                    </div>
+                  </Link>
                 </li>
                 <li>
                   <NaviButton text="Settings" icon={IconType.profile} />
