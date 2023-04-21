@@ -7,22 +7,12 @@ import {
   HeaderType
 } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../../components/cards'
-import { WritePost } from '../../components/writePost'
-import { useMumblesWithUser } from '../../hooks/useMumblesWithUser'
-import {
-  getMumblesFromData,
-  getHighestCount
-} from '../../utils/helperFunctions'
-import { useSession } from 'next-auth/react'
+import { useMumbles } from '../../hooks/useMumbles'
+import { getMumblesFromData } from '../../utils/helperFunctions'
 import { fetchMumbles } from '../../services/queries'
 
 export default function PageHome({ fallback }: { fallback: unknown }) {
-  const { data: session } = useSession()
-
-  const { data, size, setSize, isValidating, mutate } = useMumblesWithUser(
-    10,
-    fallback
-  )
+  const { data, size, setSize, isValidating } = useMumbles(10, fallback)
 
   return (
     <>
@@ -38,13 +28,6 @@ export default function PageHome({ fallback }: { fallback: unknown }) {
             repellat dicta. HELLO MK
           </Header>
         </div>
-        {session && (
-          <WritePost
-            data={getMumblesFromData(data)}
-            mutateFn={mutate}
-            count={getHighestCount(data)}
-          />
-        )}
         <Cards posts={getMumblesFromData(data)} />
         <div className="flex justify-center align-center py-m">
           <div>
