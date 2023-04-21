@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { WritePost } from '../../components/writePost'
-import { MumbleCard } from '../../components/mumbelCard'
+import { MumbleCard } from '../../components/mumbleCard'
 import { useSingleMumblesWithUser } from '../../hooks/useSingleMumbleWithUser'
 import { getToken } from 'next-auth/jwt'
 import { fetchSingleMumbleWithUser } from '../../services/queries'

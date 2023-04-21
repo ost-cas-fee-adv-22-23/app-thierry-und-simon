@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@next/font": "^13.1.6",
-    "@smartive-education/thierry-simon-mumble": "^1.15.18",
+    "@smartive-education/thierry-simon-mumble": "^1.15.19",
     "@tanstack/react-query": "^4.29.1",
     "@tanstack/react-query-devtools": "^4.29.1",
     "@types/node": "18.11.9",
