@@ -1,8 +1,4 @@
-import {
-  GetStaticPaths,
-  GetStaticProps,
-  InferGetServerSidePropsType
-} from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { WritePost } from '../../components/writePost'
 import { MumbleCard } from '../../components/mumbelCard'
 import { useSingleMumblesWithUser } from '../../hooks/useSingleMumbleWithUser'
@@ -13,10 +9,7 @@ type Props = {
   fallback: unknown
 }
 
-export default function MumblePage({
-  mumbleId,
-  fallback
-}: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
+export default function MumblePage({ mumbleId, fallback }: Props) {
   const { data: mumble, mutate } = useSingleMumblesWithUser(mumbleId, fallback)
 
   return (
