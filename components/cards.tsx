@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { MumbleType } from '../types/Mumble'
-import { MumbleCard } from './mumbelCard'
+import { MumbleCard } from './mumbleCard'
 
 type CardsProps = {
   posts: MumbleType[] | undefined

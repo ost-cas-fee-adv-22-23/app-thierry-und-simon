@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { WritePost } from '../../components/writePost'
-import { MumbleCard } from '../../components/mumbelCard'
+import { MumbleCard } from '../../components/mumbleCard'
 import { useSingleMumblesWithUser } from '../../hooks/useSingleMumbleWithUser'
 import { fetchMumbles, fetchSingleMumble } from '../../services/queries'
 
