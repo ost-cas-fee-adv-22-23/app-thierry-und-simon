@@ -26,5 +26,13 @@ export const useSingleMumblesWithUser = (
       parallel: true
     }
   )
-  return { data, isLoading, isValidating, error, mutate }
+  return session
+    ? { data, isLoading, isValidating, error, mutate }
+    : {
+        data: fallback,
+        isLoading: false,
+        isValidating: false,
+        error: null,
+        mutate
+      }
 }

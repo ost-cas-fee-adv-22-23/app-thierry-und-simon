@@ -39,17 +39,15 @@ export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
             repellat dicta.
           </Header>
         </div>
-        {session && (
-          <WritePost
-            data={getMumblesFromData(data)}
-            mutateFn={mutate}
-            count={getHighestCount(data)}
-          />
-        )}
+        <WritePost
+          data={getMumblesFromData(data)}
+          mutateFn={mutate}
+          count={getHighestCount(data)}
+        />
         <Cards posts={getMumblesFromData(data)} />
         <div className="flex justify-center align-center py-m">
           <div>
-            {isValidating ? (
+            {isLoading ? (
               <LoadingSpinner />
             ) : (
               <Button
