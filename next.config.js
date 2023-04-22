@@ -6,7 +6,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['storage.googleapis.com', 'picsum.photos'],
+    domains: ['storage.googleapis.com', 'picsum.photos', 'cas-fee-advanced-ocvdad.zitadel.cloud'],
   },
   async redirects() {
     return [
