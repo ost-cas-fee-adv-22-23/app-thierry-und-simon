@@ -19,6 +19,8 @@ import { useRouter } from 'next/router'
 import { FC, useEffect, useReducer, useState } from 'react'
 import { postMumble, postReply } from '../services/mutations'
 import { MumbleType } from '../types/Mumble'
+import { LoadingSpinner } from './loadingSpinner'
+import { LoadingUserShimmer } from './loadingUserShimmer'
 
 const reducer = function (state, action) {
   switch (action.type) {
@@ -172,12 +174,16 @@ export const WritePost: FC<WriteMumbleProps> = ({
       >
         <div className="mb-s">
           {isReply ? (
-            <User
-              type={SizeType.SM}
-              userName={session?.data?.user.username}
-              fullName={`${session?.data?.user.firstname} ${session?.data?.user.lastname}`}
-              userImageSrc={session?.data?.user.avatarUrl}
-            />
+            !session.data?.user ? (
+              <LoadingUserShimmer />
+            ) : (
+              <User
+                type={SizeType.SM}
+                userName={session?.data?.user.username}
+                fullName={`${session?.data?.user.firstname} ${session?.data?.user.lastname}`}
+                userImageSrc={session?.data?.user.avatarUrl}
+              />
+            )
           ) : (
             <Header type={HeaderType.h4} style={HeaderType.h4}>
               Hey, was läuft?
