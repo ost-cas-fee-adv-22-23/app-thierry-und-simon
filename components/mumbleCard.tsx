@@ -15,6 +15,8 @@ export const MumbleCard = ({ mumble }: Props) => {
   const { data: session } = useSession()
   const isLoggedIn = session
 
+  console.log('mumble', mumble)
+
   return (
     <div className={!isReply ? 'mb-s' : 'mb-1'}>
       <Card
@@ -29,7 +31,7 @@ export const MumbleCard = ({ mumble }: Props) => {
               <div className="mb-m">
                 {
                   // if session is undefined, it is not yet clear it user is logged in or not so show loading spinner - if not logged in the session becomes null
-                  !session || mumble?.user?.id === undefined ? (
+                  mumble?.user?.id === undefined ? (
                     <LoadingUserShimmer />
                   ) : (
                     <User

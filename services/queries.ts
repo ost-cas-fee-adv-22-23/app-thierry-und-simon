@@ -95,8 +95,10 @@ export const fetchMumblesWithUser = async ({
     })
     const mumblesWithUser = await Promise.all(
       mumbles.map(async (mumble: MumbleType) => {
-        const user = await fetchProfile(mumble.creator, accessToken)
-        mumble.user = user
+        if (accessToken) {
+          const user = await fetchProfile(mumble.creator, accessToken)
+          mumble.user = user
+        }
         return mumble
       })
     )
