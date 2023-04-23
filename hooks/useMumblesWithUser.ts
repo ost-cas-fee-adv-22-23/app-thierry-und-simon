@@ -38,6 +38,10 @@ export const useMumblesWithUser = (
   return session
     ? { data, size, setSize, isValidating, mutate, isLoading }
     : {
-        data: [fallback]
+        data: [fallback],
+        isLoading,
+        isValidating,
+        setSize,
+        size
       }
 }
