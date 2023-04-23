@@ -8,22 +8,18 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
-
 import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
 import { getToken } from 'next-auth/jwt'
 import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
-import { useSession } from 'next-auth/react'
 import { fetchMumblesWithUser } from '../services/queries'
 import { LoadingSpinner } from '../components/loadingSpinner'
 import { MumbleType } from '../types/Mumble'
 
 export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
-  const { data: session } = useSession()
-
-  const { data, size, setSize, isValidating, mutate, isLoading } =
-    useMumblesWithUser(10, fallback)
-
-  console.log(data, fallback, isLoading, isValidating)
+  const { data, size, setSize, mutate, isLoading } = useMumblesWithUser(
+    10,
+    fallback
+  )
 
   return (
     <>

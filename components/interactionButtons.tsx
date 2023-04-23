@@ -11,15 +11,17 @@ import { MumbleType } from '../types/Mumble'
 export const InteractionButtons = ({ post }: { post: MumbleType }) => {
   const { data: session } = useSession()
   const router = useRouter()
-  const [hasLiked] = useState(post.likedByUser)
+  const [hasLiked, setHasLiked] = useState(post.likedByUser)
 
   const handleLike = async () => {
     if (!hasLiked) {
       const res = await likeMumble(post.id, session?.accessToken)
-      console.log(res)
+      console.log('res', res, 'session', session)
+      res.status === 204 && setHasLiked(true)
     } else {
       const res = await unLikeMumble(post.id, session?.accessToken)
-      console.log(res)
+      console.log('UNLIKE', 'res', res, 'session', session)
+      res.status === 204 && setHasLiked(false)
     }
   }
 
@@ -29,7 +31,6 @@ export const InteractionButtons = ({ post }: { post: MumbleType }) => {
         <InteractionButton
           type={InteractionButtonType.comment}
           count={post.replyCount}
-          hasLiked={hasLiked}
           onClick={() => router.push(`/mumble/${post.id}`)}
         />
       </div>
@@ -37,6 +38,7 @@ export const InteractionButtons = ({ post }: { post: MumbleType }) => {
         <InteractionButton
           type={InteractionButtonType.like}
           count={post.likeCount}
+          hasLiked={post.replyCount > 0 ? true : false}
           onClick={() => handleLike()}
         />
       </div>

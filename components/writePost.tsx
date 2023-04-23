@@ -158,12 +158,13 @@ export const WritePost: FC<WriteMumbleProps> = ({
             session?.data?.accessToken
           )
         )
-        console.log(data)
+        console.log(data, isLoading)
         setIsLoading(false)
       }
       dispatch({ type: 'reset_form' })
     }
   }
+  console.log(isLoading)
 
   return (
     <div className={isReply ? 'mb-1' : 'mb-s'}>
