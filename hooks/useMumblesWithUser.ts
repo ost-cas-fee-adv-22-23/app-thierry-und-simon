@@ -35,13 +35,5 @@ export const useMumblesWithUser = (
       refreshInterval: 60000,
       parallel: true
     })
-  return session
-    ? { data, size, setSize, isValidating, mutate, isLoading }
-    : {
-        data: [fallback],
-        isLoading,
-        isValidating,
-        setSize,
-        size
-      }
+  return { data, size, setSize, isValidating, mutate, isLoading }
 }
