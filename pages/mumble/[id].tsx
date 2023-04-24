@@ -3,13 +3,14 @@ import { WritePost } from '../../components/writePost'
 import { MumbleCard } from '../../components/mumbleCard'
 import { useSingleMumblesWithUser } from '../../hooks/useSingleMumbleWithUser'
 import { fetchMumbles, fetchSingleMumble } from '../../services/queries'
+import { MumbleType } from '../../types/Mumble'
 
-type Props = {
+type PageProps = {
   mumbleId: string
-  fallback: unknown
+  fallback: MumbleType
 }
 
-export default function MumblePage({ mumbleId, fallback }: Props) {
+export default function MumblePage({ mumbleId, fallback }: PageProps) {
   const { data: mumble, mutate } = useSingleMumblesWithUser(mumbleId, fallback)
 
   return (
@@ -32,7 +33,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = mumbles.map((path) => ({
     params: { id: path.id }
   }))
-  console.log(paths)
   return {
     paths: paths,
     fallback: true

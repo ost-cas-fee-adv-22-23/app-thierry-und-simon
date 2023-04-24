@@ -16,7 +16,7 @@ import { LoadingSpinner } from '../components/loadingSpinner'
 import { MumbleType } from '../types/Mumble'
 
 export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
-  const { data, size, setSize, mutate, isLoading } = useMumblesWithUser(
+  const { data, size, setSize, mutate, isValidating } = useMumblesWithUser(
     10,
     fallback
   )
@@ -43,7 +43,7 @@ export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
         <Cards posts={getMumblesFromData(data)} />
         <div className="flex justify-center align-center py-m">
           <div>
-            {isLoading ? (
+            {isValidating ? (
               <LoadingSpinner />
             ) : (
               <Button

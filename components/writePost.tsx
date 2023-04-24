@@ -19,7 +19,6 @@ import { useRouter } from 'next/router'
 import { FC, useEffect, useReducer, useState } from 'react'
 import { postMumble, postReply } from '../services/mutations'
 import { MumbleType } from '../types/Mumble'
-import { LoadingSpinner } from './loadingSpinner'
 import { LoadingUserShimmer } from './loadingUserShimmer'
 
 const reducer = function (state, action) {
@@ -94,7 +93,7 @@ const reducer = function (state, action) {
 }
 
 type WriteMumbleProps = {
-  data: MumbleType[]
+  data?: MumbleType[]
   mutateFn: any
   count?: number
   mumbleId?: string
@@ -105,7 +104,8 @@ export const WritePost: FC<WriteMumbleProps> = ({
   data,
   mutateFn,
   count,
-  mumbleId
+  mumbleId,
+  mumble
 }) => {
   const session = useSession()
   const router = useRouter()

@@ -29,7 +29,7 @@ export const fetchSingleMumbleWithUser = async ({
       index++
     }
 
-    return mumble
+    return mumble as MumbleType
   } catch (error) {
     console.log(error)
   }
