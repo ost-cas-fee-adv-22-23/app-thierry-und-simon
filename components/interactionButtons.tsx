@@ -38,7 +38,7 @@ export const InteractionButtons = ({ post }: { post: MumbleType }) => {
         <InteractionButton
           type={InteractionButtonType.like}
           count={post.likeCount}
-          hasLiked={post.replyCount > 0 ? true : false}
+          hasLiked={hasLiked}
           onClick={() => handleLike()}
         />
       </div>

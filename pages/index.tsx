@@ -21,6 +21,8 @@ export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
     fallback
   )
 
+  console.log(fallback)
+
   return (
     <>
       <div className="max-w-3xl mx-auto px-10 mb-s">
@@ -77,6 +79,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     offset: 0,
     limit: 10
   })
+
+  console.log(initialMumbles)
 
   return {
     props: {

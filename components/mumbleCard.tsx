@@ -15,8 +15,6 @@ export const MumbleCard = ({ mumble }: Props) => {
   const { data: session } = useSession()
   const isLoggedIn = session
 
-  console.log('mumble', mumble)
-
   return (
     <div className={!isReply ? 'mb-s' : 'mb-1'}>
       <Card
@@ -28,10 +26,10 @@ export const MumbleCard = ({ mumble }: Props) => {
           // If session is null - the user is not logged in but initially all sessions are undefined but can also become sessions
           session !== null && (
             <Link href={`/profile/${mumble.user?.id}`}>
-              <div className="mb-m">
+              <div className="mb-m" suppressHydrationWarning>
                 {
                   // if session is undefined, it is not yet clear it user is logged in or not so show loading spinner - if not logged in the session becomes null
-                  mumble?.user?.id === undefined ? (
+                  mumble?.user?.userName === undefined ? (
                     <LoadingUserShimmer />
                   ) : (
                     <User

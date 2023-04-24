@@ -20,6 +20,8 @@ import { FC, useEffect, useReducer, useState } from 'react'
 import { postMumble, postReply } from '../services/mutations'
 import { MumbleType } from '../types/Mumble'
 import { LoadingUserShimmer } from './loadingUserShimmer'
+import { WritePostCard } from './writePostCard'
+import { useSWRConfig } from 'swr'
 
 const reducer = function (state, action) {
   switch (action.type) {
@@ -112,6 +114,10 @@ export const WritePost: FC<WriteMumbleProps> = ({
   const isReply = router.pathname.includes('/mumble/')
   const [isLoading, setIsLoading] = useState(false)
 
+  const { mutate } = useSWRConfig()
+
+  console.log(data)
+
   const [state, dispatch] = useReducer(reducer, {
     modalIsOpen: false,
     file: null,
@@ -130,17 +136,42 @@ export const WritePost: FC<WriteMumbleProps> = ({
       dispatch({ type: 'show_error_message' })
     } else {
       if (!isReply) {
-        setIsLoading(true)
-        const res = await postMumble(
-          state.text,
-          state.file,
-          session?.data?.accessToken
+        await mutateFn(
+          async () => {
+            const newMumble = await postMumble(
+              state.text,
+              state.file,
+              session?.data?.accessToken
+            )
+
+            newMumble.user = {
+              firstName: session?.data?.user?.firstname,
+              lastName: session?.data?.user?.lastname,
+              userName: session?.data?.user?.username,
+              avatarUrl: session?.data?.user?.avatarUrl
+            }
+
+            return [newMumble, ...data]
+          },
+          {
+            optimisticUpdate: [
+              {
+                text: state.text,
+                user: {
+                  firstName: session?.data?.user?.firstname,
+                  lastName: session?.data?.user?.lastname,
+                  userName: session?.data?.user?.username,
+                  avatarUrl: session?.data?.user?.avatarUrl
+                }
+              },
+              ...data
+            ]
+          }
         )
-        mutateFn([{ count: count, mumbles: [...data, res] }])
-        setIsLoading(false)
       }
       if (isReply) {
-        setIsLoading(true)
+        // setIsLoading(true)
+
         // const res = await postReply(
         //   state.text,
         //   state.file,
@@ -148,23 +179,69 @@ export const WritePost: FC<WriteMumbleProps> = ({
         //   session?.data?.accessToken
         // )
 
-        // { id: mumbleId, accessToken: session?.data?.accessToken }
-        const data = await mutateFn(
-          { id: mumbleId, accessToken: session?.data?.accessToken },
+        // console.log(res)
+
+        // mutateFn()
+
+        await mutateFn(
+          // { id: mumbleId, accessToken: session?.data?.accessToken },
           postReply(
             state.text,
             state.file,
             mumbleId,
             session?.data?.accessToken
-          )
+          ),
+          {
+            optimisticData: getOptimisticData,
+            populateCache: getOptimisticData,
+            rollbackOnError: false
+          }
         )
-        console.log(data, isLoading)
-        setIsLoading(false)
+
+        // setIsLoading(false)
       }
       dispatch({ type: 'reset_form' })
     }
   }
-  console.log(isLoading)
+
+  const getOptimisticData = (response) => {
+    console.log(session?.data)
+    console.log(response)
+    let responseWithUser = {
+      user: {
+        firstName: session?.data?.user?.firstname,
+        lastName: session?.data?.user?.lastname,
+        userName: session?.data?.user?.username,
+        avatarUrl: session?.data?.user?.avatarUrl
+      },
+      type: 'reply'
+    }
+
+    console.log(responseWithUser)
+
+    if (response.type == 'reply') {
+      responseWithUser = {
+        ...responseWithUser,
+        ...response
+      }
+    } else {
+      responseWithUser = {
+        ...responseWithUser,
+        text: state.text
+      }
+    }
+
+    console.log(responseWithUser)
+
+    const optimisticData = {
+      ...mumble,
+      responses: [responseWithUser, ...mumble.responses]
+    }
+
+    console.log(optimisticData)
+
+    return optimisticData
+  }
 
   return (
     <div className={isReply ? 'mb-1' : 'mb-s'}>

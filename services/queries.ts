@@ -2,7 +2,8 @@ import {
   MumbleType,
   QwackerMumbleResponse,
   FetchMumblePropsType,
-  FetchSingleMumbleWithUserPropsType
+  FetchSingleMumbleWithUserPropsType,
+  RawMumble
 } from '../types/Mumble'
 import { transformMumble } from '../utils/helperFunctions'
 
@@ -15,18 +16,21 @@ export const fetchSingleMumbleWithUser = async ({
     const res = await fetch(url)
     const mumble = await res.json()
 
-    const user = await fetchProfile(mumble.creator, accessToken)
-    mumble.user = user
+    if (accessToken) {
+      const user = await fetchProfile(mumble.creator, accessToken)
+      mumble.user = user
+    }
 
     const responses = await fetchResponseToMumble(id)
     mumble.responses = responses
 
-    let index = 0
-    for await (const response of responses) {
-      console.log(response)
-      const user = await fetchProfile(response.creator, accessToken)
-      mumble.responses[index].user = user
-      index++
+    if (accessToken) {
+      let index = 0
+      for await (const response of responses) {
+        const user = await fetchProfile(response.creator, accessToken)
+        mumble.responses[index].user = user
+        index++
+      }
     }
 
     return mumble as MumbleType
@@ -71,14 +75,13 @@ export const fetchMumbles = async (params?: {
       'content-type': 'application/json'
     }
   })
-  const { count, data } = (await res.json()) as QwackerMumbleResponse
+  const { data } = (await res.json()) as RawMumble[]
 
   const mumbles = data.map(transformMumble)
 
-  return {
-    count,
-    mumbles
-  }
+  console.log(mumbles)
+
+  return mumbles
 }
 
 export const fetchMumblesWithUser = async ({
@@ -88,7 +91,7 @@ export const fetchMumblesWithUser = async ({
   creator
 }: FetchMumblePropsType) => {
   try {
-    const { count, mumbles } = await fetchMumbles({
+    const mumbles = await fetchMumbles({
       offset,
       limit,
       creator
@@ -102,10 +105,8 @@ export const fetchMumblesWithUser = async ({
         return mumble
       })
     )
-    return {
-      count,
-      mumbles: mumblesWithUser
-    }
+    console.log(mumblesWithUser)
+    return mumblesWithUser
   } catch (error) {
     console.log(error)
   }
