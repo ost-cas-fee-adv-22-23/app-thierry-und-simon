@@ -22,77 +22,7 @@ import { MumbleType } from '../types/Mumble'
 import { LoadingUserShimmer } from './loadingUserShimmer'
 import { WritePostCard } from './writePostCard'
 import { useSWRConfig } from 'swr'
-
-const reducer = function (state, action) {
-  switch (action.type) {
-    case 'modal_open': {
-      return {
-        ...state,
-        modalIsOpen: true
-      }
-    }
-    case 'modal_close': {
-      return {
-        ...state,
-        modalIsOpen: false
-      }
-    }
-    case 'change_text': {
-      return {
-        ...state,
-        text: action.inputText
-      }
-    }
-    case 'change_file': {
-      return {
-        ...state,
-        file: action.inputFile
-      }
-    }
-    case 'cancel_upload': {
-      return {
-        ...state,
-        file: null,
-        modalIsOpen: false
-      }
-    }
-    case 'validate_input': {
-      let hasError = false
-      let errorMessage = ''
-
-      if (state.text === '' && !state.file) {
-        hasError = true
-        errorMessage = 'Bitte füge ein Bild oder einen Satz hinzu.'
-      }
-
-      return {
-        ...state,
-        hasError,
-        errorMessage,
-        showErrorMessage: false
-      }
-    }
-    case 'show_error_message': {
-      return {
-        ...state,
-        showErrorMessage: true
-      }
-    }
-    case 'reset_form': {
-      return {
-        ...state,
-        showErrorMessage: false,
-        modalIsOpen: false,
-        file: null,
-        text: '',
-        hasError: false,
-        errorMessage: ''
-      }
-    }
-    default:
-      return state
-  }
-}
+import { reducer } from '../utils/writePostReducer'
 
 type WriteMumbleProps = {
   data?: MumbleType[]
@@ -105,18 +35,12 @@ type WriteMumbleProps = {
 export const WritePost: FC<WriteMumbleProps> = ({
   data,
   mutateFn,
-  count,
   mumbleId,
   mumble
 }) => {
   const session = useSession()
   const router = useRouter()
   const isReply = router.pathname.includes('/mumble/')
-  const [isLoading, setIsLoading] = useState(false)
-
-  const { mutate } = useSWRConfig()
-
-  console.log(data)
 
   const [state, dispatch] = useReducer(reducer, {
     modalIsOpen: false,
@@ -131,11 +55,56 @@ export const WritePost: FC<WriteMumbleProps> = ({
     dispatch({ type: 'validate_input' })
   }, [state.text, state.file])
 
+  // used to populate optimistic data
+  const userData = {
+    user: {
+      firstName: session?.data?.user?.firstname,
+      lastName: session?.data?.user?.lastname,
+      userName: session?.data?.user?.username,
+      avatarUrl: session?.data?.user?.avatarUrl
+    }
+  }
+
+  // for wrinting reply
+  // returns optimistic data with data from state
+  const getOptimisticData = (response: MumbleType) => {
+    const optimisticResponse = {
+      ...userData,
+      text: state?.text,
+      type: 'reply'
+    }
+
+    const optimisticData = {
+      ...mumble,
+      responses: [optimisticResponse, ...mumble.responses]
+    }
+
+    return optimisticData
+  }
+
+  // for wrinting reply
+  // returns populated data with real data from response
+  const getPopulatedData = (response: MumbleType) => {
+    const populatedDataFromResponse = {
+      ...userData,
+      ...response
+    }
+
+    const populatedData = {
+      ...mumble,
+      responses: [populatedDataFromResponse, ...mumble.responses]
+    }
+
+    return populatedData
+  }
+
   const handleSubmit = async () => {
     if (state.hasError) {
       dispatch({ type: 'show_error_message' })
     } else {
+      dispatch({ type: 'reset_form' })
       if (!isReply) {
+        // muatation when writing new post
         await mutateFn(
           async () => {
             const newMumble = await postMumble(
@@ -144,12 +113,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
               session?.data?.accessToken
             )
 
-            newMumble.user = {
-              firstName: session?.data?.user?.firstname,
-              lastName: session?.data?.user?.lastname,
-              userName: session?.data?.user?.username,
-              avatarUrl: session?.data?.user?.avatarUrl
-            }
+            newMumble.user = { ...userData.user }
 
             return [newMumble, ...data]
           },
@@ -157,12 +121,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
             optimisticUpdate: [
               {
                 text: state.text,
-                user: {
-                  firstName: session?.data?.user?.firstname,
-                  lastName: session?.data?.user?.lastname,
-                  userName: session?.data?.user?.username,
-                  avatarUrl: session?.data?.user?.avatarUrl
-                }
+                ...userData
               },
               ...data
             ]
@@ -170,21 +129,8 @@ export const WritePost: FC<WriteMumbleProps> = ({
         )
       }
       if (isReply) {
-        // setIsLoading(true)
-
-        // const res = await postReply(
-        //   state.text,
-        //   state.file,
-        //   mumbleId,
-        //   session?.data?.accessToken
-        // )
-
-        // console.log(res)
-
-        // mutateFn()
-
+        // muatation when writing reply to post
         await mutateFn(
-          // { id: mumbleId, accessToken: session?.data?.accessToken },
           postReply(
             state.text,
             state.file,
@@ -193,54 +139,12 @@ export const WritePost: FC<WriteMumbleProps> = ({
           ),
           {
             optimisticData: getOptimisticData,
-            populateCache: getOptimisticData,
+            populateCache: getPopulatedData,
             rollbackOnError: false
           }
         )
-
-        // setIsLoading(false)
-      }
-      dispatch({ type: 'reset_form' })
-    }
-  }
-
-  const getOptimisticData = (response) => {
-    console.log(session?.data)
-    console.log(response)
-    let responseWithUser = {
-      user: {
-        firstName: session?.data?.user?.firstname,
-        lastName: session?.data?.user?.lastname,
-        userName: session?.data?.user?.username,
-        avatarUrl: session?.data?.user?.avatarUrl
-      },
-      type: 'reply'
-    }
-
-    console.log(responseWithUser)
-
-    if (response.type == 'reply') {
-      responseWithUser = {
-        ...responseWithUser,
-        ...response
-      }
-    } else {
-      responseWithUser = {
-        ...responseWithUser,
-        text: state.text
       }
     }
-
-    console.log(responseWithUser)
-
-    const optimisticData = {
-      ...mumble,
-      responses: [responseWithUser, ...mumble.responses]
-    }
-
-    console.log(optimisticData)
-
-    return optimisticData
   }
 
   return (
@@ -299,7 +203,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
           <Button
             size={ButtonSize.medium}
             color={ButtonColor.violet}
-            label={isLoading ? 'senden...' : 'Absenden'}
+            label={'Absenden'}
             onClick={() => handleSubmit()}
           >
             <span className="ml-xs">
