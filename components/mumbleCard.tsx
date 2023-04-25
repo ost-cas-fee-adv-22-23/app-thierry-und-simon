@@ -13,12 +13,11 @@ type Props = {
 export const MumbleCard = ({ mumble }: Props) => {
   const isReply = mumble.type === 'reply'
   const { data: session } = useSession()
-  const isLoggedIn = session
 
   return (
     <div className={!isReply ? 'mb-s' : 'mb-1'}>
       <Card
-        showProfileImage={isReply || !isLoggedIn ? false : true}
+        showProfileImage={isReply || !mumble.user ? false : true}
         roundedBorders={isReply ? false : true}
         profileImageUrl={mumble.user?.avatarUrl}
       >
@@ -61,7 +60,7 @@ export const MumbleCard = ({ mumble }: Props) => {
             </div>
           )}
         </Link>
-        {!isReply && isLoggedIn && <InteractionButtons post={mumble} />}
+        {!isReply && mumble.user && <InteractionButtons post={mumble} />}
       </Card>
     </div>
   )

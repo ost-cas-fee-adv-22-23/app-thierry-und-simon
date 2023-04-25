@@ -16,20 +16,18 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC, useEffect, useReducer, useState } from 'react'
+import { FC, useEffect, useReducer } from 'react'
 import { postMumble, postReply } from '../services/mutations'
 import { MumbleType } from '../types/Mumble'
 import { LoadingUserShimmer } from './loadingUserShimmer'
-import { WritePostCard } from './writePostCard'
-import { useSWRConfig } from 'swr'
 import { reducer } from '../utils/writePostReducer'
 
 type WriteMumbleProps = {
-  data?: MumbleType[]
+  data: MumbleType[]
   mutateFn: any
   count?: number
   mumbleId?: string
-  mumble: any
+  mumble?: MumbleType
 }
 
 export const WritePost: FC<WriteMumbleProps> = ({
@@ -67,7 +65,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
 
   // for wrinting reply
   // returns optimistic data with data from state
-  const getOptimisticData = (response: MumbleType) => {
+  const getOptimisticData = () => {
     const optimisticResponse = {
       ...userData,
       text: state?.text,
@@ -76,7 +74,9 @@ export const WritePost: FC<WriteMumbleProps> = ({
 
     const optimisticData = {
       ...mumble,
-      responses: [optimisticResponse, ...mumble.responses]
+      responses: mumble?.responses
+        ? [optimisticResponse, ...mumble.responses]
+        : [optimisticResponse]
     }
 
     return optimisticData
@@ -92,7 +92,9 @@ export const WritePost: FC<WriteMumbleProps> = ({
 
     const populatedData = {
       ...mumble,
-      responses: [populatedDataFromResponse, ...mumble.responses]
+      responses: mumble?.responses
+        ? [populatedDataFromResponse, ...mumble.responses]
+        : [populatedDataFromResponse]
     }
 
     return populatedData
