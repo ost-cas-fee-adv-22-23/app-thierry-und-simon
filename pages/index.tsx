@@ -10,7 +10,7 @@ import { Cards } from '../components/cards'
 import { WritePost } from '../components/writePost'
 import { useMumblesWithUser } from '../hooks/useMumblesWithUser'
 import { getToken } from 'next-auth/jwt'
-import { getMumblesFromData, getHighestCount } from '../utils/helperFunctions'
+import { getMumblesFromData } from '../utils/helperFunctions'
 import { fetchMumblesWithUser } from '../services/queries'
 import { LoadingSpinner } from '../components/loadingSpinner'
 import { MumbleType } from '../types/Mumble'
@@ -20,8 +20,6 @@ export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
     10,
     fallback
   )
-
-  console.log(fallback)
 
   return (
     <>
@@ -37,11 +35,7 @@ export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
             repellat dicta.
           </Header>
         </div>
-        <WritePost
-          data={getMumblesFromData(data)}
-          mutateFn={mutate}
-          count={getHighestCount(data)}
-        />
+        <WritePost data={getMumblesFromData(data)} mutateFn={mutate} />
         <Cards posts={getMumblesFromData(data)} />
         <div className="flex justify-center align-center py-m">
           <div>
@@ -79,8 +73,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     offset: 0,
     limit: 10
   })
-
-  console.log(initialMumbles)
 
   return {
     props: {

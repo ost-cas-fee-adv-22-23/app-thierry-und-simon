@@ -8,12 +8,6 @@ export function getMumblesFromData(data: any[] | undefined): MumbleType[] {
   return data.map((d) => (d ? d : [])).flat()
 }
 
-// get highest count from all arrays from the useSWRInfinite data
-export function getHighestCount(data: any[] | undefined): number {
-  if (!data) return 0
-  return data.map((d) => (d ? d.count : 0)).reduce((a, b) => Math.max(a, b))
-}
-
 export const transformMumble = (mumble: RawMumble) => ({
   ...mumble,
   createdTimestamp: decodeTime(mumble.id)
