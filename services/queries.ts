@@ -6,26 +6,38 @@ import {
 } from '../types/Mumble'
 import { transformMumble } from '../utils/helperFunctions'
 
+export const fetchSingleMumble = async (id: string, accessToken?: string) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}`
+    const res = await fetch(url, {
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    const mumble = await res.json()
+    const responses = await fetchResponseToMumble(id)
+    mumble.responses = responses
+
+    return mumble
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const fetchSingleMumbleWithUser = async ({
   id,
   accessToken
 }: FetchSingleMumbleWithUserPropsType) => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${id}`
-    const res = await fetch(url)
-    const mumble = await res.json()
+    const mumble = await fetchSingleMumble(id, accessToken)
 
     if (accessToken) {
       const user = await fetchProfile(mumble.creator, accessToken)
       mumble.user = user
-    }
 
-    const responses = await fetchResponseToMumble(id)
-    mumble.responses = responses
-
-    if (accessToken) {
       let index = 0
-      for await (const response of responses) {
+      for await (const response of mumble.responses) {
         const user = await fetchProfile(response.creator, accessToken)
         mumble.responses[index].user = user
         index++
@@ -38,31 +50,19 @@ export const fetchSingleMumbleWithUser = async ({
   }
 }
 
-export const fetchSingleMumble = async (id: string) => {
-  try {
-    const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${id}`
-    const res = await fetch(url)
-    const mumble = await res.json()
-    const responses = await fetchResponseToMumble(id)
-    mumble.responses = responses
-
-    return mumble
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const fetchMumbles = async (params?: {
+  accessToken?: string
   limit?: number
   offset?: number | string
   newerThanMumbleId?: string
   creator?: string
 }) => {
-  const { limit, offset, newerThanMumbleId, creator } = params || {}
+  const { accessToken, limit, offset, newerThanMumbleId, creator } =
+    params || {}
 
   const url = `${
     process.env.NEXT_PUBLIC_QWACKER_API_URL
-  }/posts?${new URLSearchParams({
+  }posts?${new URLSearchParams({
     limit: limit?.toString() || '10',
     offset: offset?.toString() || '0',
     newerThan: newerThanMumbleId || '',
@@ -71,7 +71,8 @@ export const fetchMumbles = async (params?: {
 
   const res = await fetch(url, {
     headers: {
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
     }
   })
   const { data } = (await res.json()) as QwackerMumbleResponse
@@ -89,6 +90,7 @@ export const fetchMumblesWithUser = async ({
 }: FetchMumblePropsType) => {
   try {
     const mumbles = await fetchMumbles({
+      accessToken,
       offset,
       limit,
       creator
@@ -102,7 +104,6 @@ export const fetchMumblesWithUser = async ({
         return mumble
       })
     )
-    console.log(mumblesWithUser)
     return mumblesWithUser
   } catch (error) {
     console.log(error)
@@ -111,10 +112,9 @@ export const fetchMumblesWithUser = async ({
 
 export const fetchResponseToMumble = async (id: string) => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts/${id}/replies`
+    const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}/replies`
     const res = await fetch(url)
     const responses = await res.json()
-    console.log(url)
     return responses
   } catch (error) {
     console.log(error)

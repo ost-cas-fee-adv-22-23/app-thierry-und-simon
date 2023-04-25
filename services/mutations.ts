@@ -42,7 +42,7 @@ export const postMumble = async (
 export const postReply = async (
   text: string,
   file: UploadImage | null,
-  mumbleId: string,
+  mumbleId?: string,
   accessToken?: string
 ) => {
   if (!accessToken) {
@@ -79,24 +79,23 @@ export const postReply = async (
 }
 
 export const likeMumble = async (mumbleId: string, accessToken?: string) => {
-  if (!accessToken) {
-    throw new Error('No access token')
-  }
-
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${mumbleId}/likes`,
       {
         method: 'PUT',
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
         }
       }
     )
 
     if (!response.ok) {
+      console.error(response)
       throw new Error('Something was not okay')
     }
+    console.log(response, accessToken)
     return response
   } catch (error) {
     throw new Error(

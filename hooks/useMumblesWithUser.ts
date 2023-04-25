@@ -25,15 +25,24 @@ export const useMumblesWithUser = (
       index: index,
       creator: creator
     }
+    console.log(key)
     return key
   }
 
   const { data, size, setSize, isValidating, mutate, isLoading } =
-    useSWRInfinite(getKey, fetchMumblesWithUser, {
+    useSWRInfinite((i) => (!session ? null : getKey(i)), fetchMumblesWithUser, {
       fallbackData: [fallback],
       revalidateOnFocus: false,
       refreshInterval: 60000,
       parallel: true
     })
-  return { data, size, setSize, isValidating, mutate, isLoading }
+
+  return {
+    data: data,
+    size,
+    setSize,
+    isValidating,
+    mutate,
+    isLoading
+  }
 }

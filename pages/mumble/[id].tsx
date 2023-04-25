@@ -1,9 +1,10 @@
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import { WritePost } from '../../components/writePost'
 import { MumbleCard } from '../../components/mumbleCard'
 import { useSingleMumblesWithUser } from '../../hooks/useSingleMumbleWithUser'
-import { fetchMumbles, fetchSingleMumble } from '../../services/queries'
+import { fetchSingleMumbleWithUser } from '../../services/queries'
 import { MumbleType } from '../../types/Mumble'
+import { getToken } from 'next-auth/jwt'
 
 type PageProps = {
   mumbleId: string
@@ -28,23 +29,19 @@ export default function MumblePage({ mumbleId, fallback }: PageProps) {
   )
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const mumbles = await fetchMumbles({ limit: 100 })
-  const paths = mumbles.map((path: MumbleType) => ({
-    params: { id: path.id }
-  }))
-  return {
-    paths: paths,
-    fallback: true
-  }
-}
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const singleMumble = await fetchSingleMumble(params?.id as string)
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query
+}) => {
+  const token = await getToken({ req })
+  const singleMumble = await fetchSingleMumbleWithUser({
+    id: query?.id as string,
+    accessToken: token?.accessToken
+  })
 
   return {
     props: {
-      mumbleId: params?.id,
+      mumbleId: query?.id,
       fallback: singleMumble
     }
   }
