@@ -10,7 +10,7 @@ type Props = {
   showUser?: boolean
 }
 
-export const MumbleCard = ({ mumble, showUser }: Props) => {
+export const MumbleCard = ({ mumble, showUser = true }: Props) => {
   const isReply = mumble.type === 'reply'
   const { data: session } = useSession()
 
