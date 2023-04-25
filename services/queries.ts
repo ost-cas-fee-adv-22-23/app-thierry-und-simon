@@ -2,7 +2,8 @@ import {
   MumbleType,
   QwackerMumbleResponse,
   FetchMumblePropsType,
-  FetchSingleMumbleWithUserPropsType
+  FetchSingleMumbleWithUserPropsType,
+  SearchMumbleProps
 } from '../types/Mumble'
 import { transformMumble } from '../utils/helperFunctions'
 
@@ -133,4 +134,48 @@ export const fetchProfile = async (id: string, accessToken?: string) => {
   })
   const user = await res.json()
   return user
+}
+
+export const fetchMumblesWithSearch = async ({
+  accessToken,
+  key,
+  value
+}: SearchMumbleProps) => {
+  const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`
+  const searchParams = {
+    [key]: [value],
+    isReply: false
+  }
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify(searchParams)
+  })
+  const { data } = await res.json()
+  return data
+}
+
+export const fetchMumblesWithSearchWithUser = async ({
+  accessToken,
+  key,
+  value
+}: SearchMumbleProps) => {
+  try {
+    const mumbles = await fetchMumblesWithSearch({ accessToken, key, value })
+    const mumblesWithUser = await Promise.all(
+      mumbles.map(async (mumble: MumbleType) => {
+        if (accessToken) {
+          const user = await fetchProfile(mumble.creator, accessToken)
+          mumble.user = user
+        }
+        return mumble
+      })
+    )
+    return mumblesWithUser
+  } catch (error) {
+    console.error(error)
+  }
 }

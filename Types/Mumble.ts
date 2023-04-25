@@ -49,3 +49,9 @@ export type FetchSingleMumbleWithUserPropsType = {
   id: string
   accessToken?: string
 }
+
+export type SearchMumbleProps = {
+  accessToken?: string
+  key: string
+  value: string
+}

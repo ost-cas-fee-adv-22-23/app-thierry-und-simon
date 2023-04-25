@@ -1,8 +1,8 @@
+import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useMumblesWithUser } from '../../hooks/useMumblesWithUser'
 import { getMumblesFromData } from '../../utils/helperFunctions'
-
 import {
   Button,
   ButtonColor,
@@ -10,16 +10,26 @@ import {
 } from '@smartive-education/thierry-simon-mumble'
 import Profile from '../../components/profile'
 import { Cards } from '../../components/cards'
-import { fetchMumblesWithUser, fetchProfile } from '../../services/queries'
+import {
+  fetchMumblesWithUser,
+  fetchProfile,
+  fetchMumblesWithSearchWithUser
+} from '../../services/queries'
 import { MumbleType } from '../../types/Mumble'
 import { UserType } from '../../types/User'
 
 type ProfilPageProps = {
   user: UserType
   initialMumbles: MumbleType[]
+  likes: MumbleType[]
 }
 
-export default function ProfilePage({ user, initialMumbles }: ProfilPageProps) {
+export default function ProfilePage({
+  user,
+  likes,
+  initialMumbles
+}: ProfilPageProps) {
+  const [showLikes, setShowLikes] = useState(false)
   const { data, size, setSize, isValidating } = useMumblesWithUser(
     10,
     initialMumbles,
@@ -29,14 +39,28 @@ export default function ProfilePage({ user, initialMumbles }: ProfilPageProps) {
   return (
     <div className="max-w-3xl mx-auto px-10 mb-s">
       <Profile user={user} />
-      <Cards posts={getMumblesFromData(data)} />
       <Button
+        onClick={() => setShowLikes(!showLikes)}
         size={ButtonSize.large}
-        color={ButtonColor.violet}
-        onClick={() => setSize(size + 1)}
+        color={ButtonColor.gradiant}
       >
-        {isValidating ? 'Loading...' : 'Mehr laden!'}
+        {!showLikes ? 'Meine Likes' : 'Meine Mumbles'}
       </Button>
+      <section className="mt-4">
+        {!showLikes && (
+          <>
+            <Cards posts={getMumblesFromData(data)} />
+            <Button
+              size={ButtonSize.large}
+              color={ButtonColor.violet}
+              onClick={() => setSize(size + 1)}
+            >
+              {isValidating ? 'Loading...' : 'Mehr laden!'}
+            </Button>
+          </>
+        )}
+        {showLikes && <Cards posts={likes} />}
+      </section>
     </div>
   )
 }
@@ -54,8 +78,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       context.query.alias as string,
       token?.accessToken as string
     )
+    const likes = await fetchMumblesWithSearchWithUser({
+      accessToken: token?.accessToken as string,
+      key: 'likedBy',
+      value: user.id
+    })
 
-    return { props: { user, initialMumbles, fallback: initialMumbles } }
+    return {
+      props: {
+        user: user,
+        initialMumbles: initialMumbles,
+        likes: likes,
+        fallback: initialMumbles
+      }
+    }
   } catch (error) {
     let message
     if (error instanceof Error) {
@@ -63,7 +99,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     } else {
       message = String(error)
     }
-
     return { props: { error: message, mumbles: [], count: 0 } }
   }
 }
