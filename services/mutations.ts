@@ -49,8 +49,6 @@ export const postReply = async (
     throw new Error('No access token')
   }
 
-  console.log(text)
-
   const formData = new FormData()
   formData.append('text', text)
   if (file) {
