@@ -18,7 +18,7 @@ export const usePreserveScroll = () => {
       scrollPositions.current[url] = window.scrollY
     }
 
-    const onRouteChangeComplete = (url: any) => {
+    const onRouteChangeComplete = (url: string) => {
       if (isBack.current && scrollPositions.current[url]) {
         window.scroll({
           top: scrollPositions.current[url],
