@@ -18,7 +18,7 @@ export const useSingleMumblesWithUser = (
   }
 
   const { data, isLoading, isValidating, error, mutate } = useSWR(
-    () => (!session ? null : getKey),
+    () => (!session ? null : getKey()),
     fetchSingleMumbleWithUser,
     {
       fallbackData: fallback,
