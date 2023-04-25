@@ -1,34 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CASFEE Advanced Mumble App Project
 
-## Getting Started
+### Contributors:
 
-First, run the development server:
+[Thierry Seiler](https://github.com/THRY)
+[Simon Herensperger](https://github.com/eoss-sh)
+
+### Live Vercel Deploy:
+
+[https://app-thierry-und-simon.vercel.app/](https://app-thierry-und-simon.vercel.app/)
+
+## Allgemeine Infos
+
+_Rendering Stratefien_
+
+Im Vergleich zur Präsentation wurde eine grössere Änderung vorgenommen. Die Single Mumbles werden nicht mehr statisch generiert sondern auch serverseitig gerendert. Dies weil das fetschen der Likes und Userdaten auf dem Client nicht sinnvoll war und insbesondere die Likes aufgrund der fehlenden Userangaben nicht korrekt ausgegeben werden konnten.
+
+Ansonsten sind die Renderingstrategien gleich geblieben:
+
+- Index: SSR
+- Index für "Nicht-User" ohne Login: SSG
+- Single Mumble: SSR
+- Profil: SSR
+- Login, Register: CSR
+
+_Service_
+
+Bei den Services gibt es ein File `fetch.ts`. Dieses File wird aktuell nicht verwendet. Die Services sollten in einem nächsten Schritt jedoch generischer implementiert werden. Damit das noch gemacht werden kann, ist das File noch immer Teil des Projektes.
+
+_Stack_
+
+Neben Next.js, Tailwind und TypeScript wurde SWR, Next Auth, next-pwa und nprogress eingesetzt. Ebenfalls ist die [Component Libraray](https://github.com/smartive-education/design-system-component-library-thierry-und-simon) aus Block 1 Bestandteil des Projektes.
+
+## PWA
+
+Die App ist als PWA verfügbar und kann entsprechen installiert werden.
+
+## Allgemeien Infos und Installation
+
+Die App basiert auf [Next.js](https://nextjs.org/) und ist mit [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) umgesetzt.
+
+### Start
+
+Um das Projekt lokal zu installieren geht man wie folgt vor:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Öffne [http://localhost:3000](http://localhost:3000) mit einem Browser um die App zu sehen.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### API Documentation
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Die Dokumentation der Qwaker-REST Api ist [hier](https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/rest/) zu finden.
