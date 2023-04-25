@@ -80,8 +80,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     )
     const likes = await fetchMumblesWithSearchWithUser({
       accessToken: token?.accessToken as string,
-      key: 'likedBy',
-      value: user.id
+      searchParams: { likedBy: [user.id], isReply: false }
     })
 
     return {

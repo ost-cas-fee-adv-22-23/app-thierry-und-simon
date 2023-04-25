@@ -138,14 +138,10 @@ export const fetchProfile = async (id: string, accessToken?: string) => {
 
 export const fetchMumblesWithSearch = async ({
   accessToken,
-  key,
-  value
+  searchParams
 }: SearchMumbleProps) => {
   const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`
-  const searchParams = {
-    [key]: [value],
-    isReply: false
-  }
+  console.log('SearchParams', JSON.stringify(searchParams))
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -160,11 +156,10 @@ export const fetchMumblesWithSearch = async ({
 
 export const fetchMumblesWithSearchWithUser = async ({
   accessToken,
-  key,
-  value
+  searchParams
 }: SearchMumbleProps) => {
   try {
-    const mumbles = await fetchMumblesWithSearch({ accessToken, key, value })
+    const mumbles = await fetchMumblesWithSearch({ accessToken, searchParams })
     const mumblesWithUser = await Promise.all(
       mumbles.map(async (mumble: MumbleType) => {
         if (accessToken) {

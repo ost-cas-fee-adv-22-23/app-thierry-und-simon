@@ -52,6 +52,5 @@ export type FetchSingleMumbleWithUserPropsType = {
 
 export type SearchMumbleProps = {
   accessToken?: string
-  key: string
-  value: string
+  searchParams: object
 }
