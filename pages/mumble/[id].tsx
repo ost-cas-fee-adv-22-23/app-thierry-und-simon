@@ -13,8 +13,6 @@ type PageProps = {
 export default function MumblePage({ mumbleId, fallback }: PageProps) {
   const { data: mumble, mutate } = useSingleMumblesWithUser(mumbleId, fallback)
 
-  console.log(mumble)
-
   return (
     <div className="max-w-3xl mx-auto px-10 mb-s">
       {mumble && <MumbleCard mumble={mumble} />}
@@ -32,7 +30,7 @@ export default function MumblePage({ mumbleId, fallback }: PageProps) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const mumbles = await fetchMumbles({ limit: 100 })
-  const paths = mumbles.map((path) => ({
+  const paths = mumbles.map((path: MumbleType) => ({
     params: { id: path.id }
   }))
   return {

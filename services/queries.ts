@@ -2,8 +2,7 @@ import {
   MumbleType,
   QwackerMumbleResponse,
   FetchMumblePropsType,
-  FetchSingleMumbleWithUserPropsType,
-  RawMumble
+  FetchSingleMumbleWithUserPropsType
 } from '../types/Mumble'
 import { transformMumble } from '../utils/helperFunctions'
 
@@ -75,11 +74,9 @@ export const fetchMumbles = async (params?: {
       'content-type': 'application/json'
     }
   })
-  const { data } = (await res.json()) as RawMumble[]
+  const { data } = (await res.json()) as QwackerMumbleResponse
 
   const mumbles = data.map(transformMumble)
-
-  console.log(mumbles)
 
   return mumbles
 }
