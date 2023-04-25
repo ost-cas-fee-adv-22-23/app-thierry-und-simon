@@ -22,7 +22,7 @@ export const fetchSingleMumble = async (id: string, accessToken?: string) => {
 
     return mumble
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -47,7 +47,7 @@ export const fetchSingleMumbleWithUser = async ({
 
     return mumble as MumbleType
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -107,7 +107,7 @@ export const fetchMumblesWithUser = async ({
     )
     return mumblesWithUser
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -118,7 +118,7 @@ export const fetchResponseToMumble = async (id: string) => {
     const responses = await res.json()
     return responses
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -141,7 +141,6 @@ export const fetchMumblesWithSearch = async ({
   searchParams
 }: SearchMumbleProps) => {
   const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`
-  console.log('SearchParams', JSON.stringify(searchParams))
   const res = await fetch(url, {
     method: 'POST',
     headers: {

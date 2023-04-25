@@ -95,7 +95,6 @@ export const likeMumble = async (mumbleId: string, accessToken?: string) => {
       console.error(response)
       throw new Error('Something was not okay')
     }
-    console.log(response, accessToken)
     return response
   } catch (error) {
     throw new Error(
