@@ -25,7 +25,7 @@ export default function ProfilePage({ user, initialMumbles }: ProfilPageProps) {
     initialMumbles,
     user.id
   )
-  console.log(user, initialMumbles)
+
   return (
     <div className="max-w-3xl mx-auto px-10 mb-s">
       <Profile user={user} />

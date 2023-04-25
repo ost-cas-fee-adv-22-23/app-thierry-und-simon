@@ -16,11 +16,9 @@ export const InteractionButtons = ({ post }: { post: MumbleType }) => {
   const handleLike = async () => {
     if (!hasLiked) {
       const res = await likeMumble(post.id, session?.accessToken)
-      console.log('res', res, 'session', session)
       res.status === 204 && setHasLiked(true)
     } else {
       const res = await unLikeMumble(post.id, session?.accessToken)
-      console.log('UNLIKE', 'res', res, 'session', session)
       res.status === 204 && setHasLiked(false)
     }
   }

@@ -79,8 +79,6 @@ export const fetchMumbles = async (params?: {
 
   const mumbles = data.map(transformMumble)
 
-  console.log(mumbles)
-
   return mumbles
 }
 
