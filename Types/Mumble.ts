@@ -12,7 +12,7 @@ export type MumbleType = {
   replyCount: number
   createdTimestamp: number
   user?: UserType
-  responses: []
+  responses?: Response[]
 }
 
 export type RawMumble = Omit<MumbleType, 'createdTimestamp'>

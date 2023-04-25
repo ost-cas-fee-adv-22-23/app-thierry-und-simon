@@ -25,10 +25,10 @@ export default function PageHome({ fallback }: { fallback: unknown }) {
         <div className="mb-l text-slate-500">
           <Header type={HeaderType.h2} style={HeaderType.h4}>
             Voluptatem qui cumque voluptatem quia tempora dolores distinctio vel
-            repellat dicta. HELLO MK
+            repellat dicta.
           </Header>
         </div>
-        <Cards posts={getMumblesFromData(data)} />
+        <Cards showUser={false} posts={getMumblesFromData(data)} />
         <div className="flex justify-center align-center py-m">
           <div>
             <Button

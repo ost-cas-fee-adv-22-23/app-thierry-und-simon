@@ -20,7 +20,7 @@ export default function MumblePage({ mumbleId, fallback }: PageProps) {
 
       <WritePost mumbleId={mumbleId} mumble={mumble} mutateFn={mutate} />
 
-      {mumble &&
+      {mumble?.responses &&
         mumble?.responses?.length > 0 &&
         mumble.responses.map((response, index) => (
           <MumbleCard mumble={response} key={`mumblereponse-${index}`} />

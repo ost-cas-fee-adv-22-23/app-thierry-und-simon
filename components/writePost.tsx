@@ -23,7 +23,7 @@ import { LoadingUserShimmer } from './loadingUserShimmer'
 import { reducer } from '../utils/writePostReducer'
 
 type WriteMumbleProps = {
-  data: MumbleType[]
+  data?: MumbleType[]
   mutateFn: any
   count?: number
   mumbleId?: string
@@ -105,7 +105,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
       dispatch({ type: 'show_error_message' })
     } else {
       dispatch({ type: 'reset_form' })
-      if (!isReply) {
+      if (!isReply && data) {
         // muatation when writing new post
         await mutateFn(
           async () => {
@@ -130,7 +130,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
           }
         )
       }
-      if (isReply) {
+      if (isReply && mumble) {
         // muatation when writing reply to post
         await mutateFn(
           postReply(

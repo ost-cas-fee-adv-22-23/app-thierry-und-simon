@@ -4,13 +4,17 @@ import { MumbleCard } from './mumbleCard'
 
 type CardsProps = {
   posts: MumbleType[] | undefined
+  showUser?: boolean
 }
 
-export const Cards: FC<CardsProps> = ({ posts }: CardsProps) => {
+export const Cards: FC<CardsProps> = ({
+  posts,
+  showUser = true
+}: CardsProps) => {
   return (
     <>
       {posts?.map((post: MumbleType) => {
-        return <MumbleCard mumble={post} key={post.id} />
+        return <MumbleCard showUser={showUser} mumble={post} key={post.id} />
       })}
     </>
   )
