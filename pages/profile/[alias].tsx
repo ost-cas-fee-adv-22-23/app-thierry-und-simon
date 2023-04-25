@@ -27,7 +27,7 @@ export default function ProfilePage({ user, initialMumbles }: ProfilPageProps) {
   )
   console.log(user, initialMumbles)
   return (
-    <>
+    <div className="max-w-3xl mx-auto px-10 mb-s">
       <Profile user={user} />
       <Cards posts={getMumblesFromData(data)} />
       <Button
@@ -37,7 +37,7 @@ export default function ProfilePage({ user, initialMumbles }: ProfilPageProps) {
       >
         {isValidating ? 'Loading...' : 'Mehr laden!'}
       </Button>
-    </>
+    </div>
   )
 }
 
