@@ -5,12 +5,12 @@ import { MumbleType } from '../types/Mumble'
 import { InteractionButtons } from './interactionButtons'
 import { useSession } from 'next-auth/react'
 import { LoadingUserShimmer } from './loadingUserShimmer'
-
 type Props = {
   mumble: MumbleType
+  showUser?: boolean
 }
 
-export const MumbleCard = ({ mumble }: Props) => {
+export const MumbleCard = ({ mumble, showUser }: Props) => {
   const isReply = mumble.type === 'reply'
   const { data: session } = useSession()
 
@@ -23,7 +23,7 @@ export const MumbleCard = ({ mumble }: Props) => {
       >
         {
           // If session is null - the user is not logged in but initially all sessions are undefined but can also become sessions
-          session !== null && (
+          session !== null && showUser && (
             <Link href={`/profile/${mumble.user?.id}`}>
               <div className="mb-m" suppressHydrationWarning>
                 {
