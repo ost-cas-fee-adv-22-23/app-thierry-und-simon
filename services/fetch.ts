@@ -14,7 +14,8 @@ export const fetchService = async ({
   headers,
   id,
   details,
-  methode = 'GET'
+  methode = 'GET',
+  body
 }: fetchProps) => {
   try {
     const data = await fetch(`${BASE_URL}${url}${id}${details}`, {
@@ -22,7 +23,8 @@ export const fetchService = async ({
       headers: {
         'content-type': 'application/json',
         ...headers
-      }
+      },
+      body: JSON.stringify(body)
     })
     return await data.json()
   } catch (error) {
