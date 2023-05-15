@@ -38,3 +38,6 @@ next-env.d.ts
 
 # npmrc
 .npmrc
+/test-results/
+/playwright-report/
+/playwright/.cache/
