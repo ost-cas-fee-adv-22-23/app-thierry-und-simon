@@ -1,12 +1,5 @@
 import { test, expect } from '@playwright/test'
 
-test('has title', async ({ page }) => {
-  await page.goto('https://app-thierry-und-simon.vercel.app/')
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Mumble/)
-})
-
 test('get started link', async ({ page }) => {
   await page.goto('https://app-thierry-und-simon.vercel.app/')
 
@@ -15,4 +8,12 @@ test('get started link', async ({ page }) => {
 
   // Expects the URL to contain intro.
   await expect(page).toHaveURL(/.*login/)
+})
+
+test('check h1 content', async ({ page }) => {
+  await page.goto('https://app-thierry-und-simon.vercel.app/')
+  const h1Content = (await page.locator('.mb-xs h1').innerText()).includes(
+    'Mumble'
+  )
+  expect(h1Content).toBe(true)
 })
