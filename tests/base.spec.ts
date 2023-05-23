@@ -17,3 +17,11 @@ test('check h1 content', async ({ page }) => {
   )
   expect(h1Content).toBe(true)
 })
+
+test('mumbles loaded', async ({ page }) => {
+  await page.goto('https://app-thierry-und-simon.vercel.app/')
+  const h1Content = (await page.locator('.mb-xs h1').innerText()).includes(
+    'Mumble'
+  )
+  expect(h1Content).toBe(true)
+})
