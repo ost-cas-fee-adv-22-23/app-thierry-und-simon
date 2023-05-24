@@ -1,0 +1,8 @@
+node_modules
+.next/
+.env
+.eslintrc.json
+.eslintignore
+.gitignore
+.prettierrc.json
+.prettieriignore
