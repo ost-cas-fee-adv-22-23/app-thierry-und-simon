@@ -21,11 +21,6 @@ RUN echo "@smartive-education:registry=https://npm.pkg.github.com" > ~/.npmrc \
     && echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc \
     && npm ci
 COPY --from=build /app/.next ./.next
-ENV NEXTAUTH_URL=
-ENV NEXTAUTH_SECRET=
-ENV NEXT_PUBLIC_QWACKER_API_URL=
-ENV ZITADEL_ISSUER=
-ENV ZITADEL_CLIENT_ID=
 EXPOSE 3000
 USER node
 CMD npm run start
