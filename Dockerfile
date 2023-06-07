@@ -24,7 +24,6 @@ FROM node:18-alpine as production
 ARG NPM_TOKEN
 WORKDIR /app
 ENV NODE_ENV production
-COPY .env /app/.env
 COPY --from=development /app/public ./public
 COPY --from=development /app/.next ./.next
 COPY --from=development /app/node_modules ./node_modules
