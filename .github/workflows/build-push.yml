@@ -21,7 +21,7 @@ jobs:
         with:
           registry: europe-west6-docker.pkg.dev
           username: _json_key
-          password: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          password: ${{ secrets.GCP_CREDENTIALS }}
       - uses: docker/build-push-action@v3
         with:
           context: ./
