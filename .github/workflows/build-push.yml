@@ -1,32 +1,16 @@
-name: Build and Push to Google Container Registry
+name: ci
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch: {}
+    branches: main
+
 jobs:
-  release:
+  login:
     runs-on: ubuntu-latest
-    permissions: write-all
     steps:
-      - uses: actions/checkout@v3
-      - name: Login to GCP
+      - name: Login to GAR
         uses: docker/login-action@v2
         with:
           registry: europe-west6-docker.pkg.dev
           username: _json_key
           password: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: ./
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          secrets: |
-            "npm_token=${{ secrets.NPM_TOKEN }}"
-          tags: 'europe-west6-docker.pkg.dev/casfee-adv-mumble/mumble-thierry-simon/mumble-image:latest'
