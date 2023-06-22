@@ -20,7 +20,7 @@ on:
 env:
   PROJECT_ID: casfee-adv-mumble
   GAR_LOCATION: europe-west6
-  REPOSITORY: app-thierry-simon
+  REPOSITORY: mumble-thierry-simon
   IMAGE: mumble-image
 
 jobs:
