@@ -55,8 +55,9 @@ jobs:
       - name: 'Docker push'
         run: |-
           docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA"
-          - name: Setup Terraform
-          uses: hashicorp/setup-terraform@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
         id: init
