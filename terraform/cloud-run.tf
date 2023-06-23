@@ -27,16 +27,16 @@ output "cloud-runner-email" {
   value = google_service_account.cloud-runner.email
 }
 
-resource "google_cloud_run_service" "thierry-simon-mumble-app" {
-  name                       = local.name
-  location                   = local.gcp_region
-  autogenerate_revision_name = true
-
 resource "google_project_service" "project" {
   project = local.name
   service = "iam.googleapis.com"
   disable_dependent_services = true
 }
+
+resource "google_cloud_run_service" "thierry-simon-mumble-app" {
+  name                       = local.name
+  location                   = local.gcp_region
+  autogenerate_revision_name = true
 
   template {
     spec {
