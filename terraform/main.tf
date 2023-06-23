@@ -11,6 +11,9 @@ provider "google" {
 data "google_project" "project" {
 }
 
+provider "random" {
+}
+
 terraform {
   backend "gcs" {
     bucket = "thierry-simon-mumble-run-tf-state"
