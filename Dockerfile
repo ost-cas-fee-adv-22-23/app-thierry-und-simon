@@ -28,6 +28,7 @@ COPY --from=development /app/public ./public
 COPY --from=development /app/.next ./.next
 COPY --from=development /app/node_modules ./node_modules
 COPY --from=development /app/package.json /app/package-lock.json ./
+COPY --from=development /app/terraform ./terraform
 RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc && \
     npm ci && \
     rm -rf .npmrc
