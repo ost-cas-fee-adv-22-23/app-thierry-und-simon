@@ -1,0 +1,25 @@
+name: Workflow with dependencies
+
+on:
+  push:
+    branches: [main]
+jobs:
+  quality:
+    name: Quality Checks Workflow
+    uses: ./.github/workflows/quality.yml
+    secrets: inherit
+  e2e:
+    name: E2E Workflow
+    uses: ./.github/workflows/e2e-test.yml
+    needs: quality
+    secrets: inherit
+  ui:
+    name: UI Workflow
+    uses: ./.github/workflows/integration-test.yml
+    needs: quality
+    secrets: inherit
+  deploy:
+    name: Deploy Workflow
+    uses: ./.github/workflows/deploy-push.yml
+    needs: [e2e, ui]
+    secrets: inherit
