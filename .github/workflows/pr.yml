@@ -1,4 +1,4 @@
-name: Workflow with dependencies
+name: Workflow with all actions and dependencies
 
 on:
   push:
