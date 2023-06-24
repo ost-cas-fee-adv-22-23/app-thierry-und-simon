@@ -3,6 +3,7 @@ name: Workflow with all actions and dependencies
 on:
   push:
     branches: [main]
+
 jobs:
   quality:
     name: Quality Checks Workflow
