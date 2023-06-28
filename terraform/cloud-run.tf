@@ -38,8 +38,7 @@ resource "google_cloud_run_service" "thierry-simon-mumble-app" {
   template {
     spec {
       containers {
-        image = "europe-west6-docker.pkg.dev/casfee-adv-mumble/mumble-thierry-simon/mumble-image"
-
+        image = "europe-west6-docker.pkg.dev/casfee-adv-mumble/mumble-thierry-simon/mumble-image:${var.commit_hash}"
         resources {
           limits = {
             "memory" = "256Mi"
