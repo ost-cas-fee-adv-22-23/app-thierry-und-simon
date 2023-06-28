@@ -22,5 +22,5 @@ jobs:
   deploy:
     name: Deploy Workflow
     uses: ./.github/workflows/build-push.yml
-    needs: [e2e, ui]
+    needs: [e2e]
     secrets: inherit

@@ -3,7 +3,7 @@
 # Install dependencies only when needed
 FROM node:18-alpine as build
 WORKDIR /app
-COPY ["package.json", "package-lock.json", "./"]
+COPY ["package.json", "package-lock.json", "next.config.js", "./"]
 ARG NPM_TOKEN
 RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc && \
     npm ci && \
@@ -17,7 +17,7 @@ ENV NODE_ENV development
 ENV NEXT_TELEMETRY_DISABLED 1
 COPY . .
 COPY --from=build /app/node_modules ./node_modules
-COPY --from=build ./next.config.js ./
+COPY --from=build /app/next.config.js ./
 RUN npm run build
 
 # Production image, copy all the files and run next
