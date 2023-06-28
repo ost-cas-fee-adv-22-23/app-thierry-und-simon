@@ -27,6 +27,9 @@ output "cloud-runner-email" {
   value = google_service_account.cloud-runner.email
 }
 
+resource "random_uuid" "random_nextauth_secret" {
+}
+
 resource "google_cloud_run_service" "thierry-simon-mumble-app" {
   name                       = local.name
   location                   = local.gcp_region
@@ -46,6 +49,31 @@ resource "google_cloud_run_service" "thierry-simon-mumble-app" {
         ports {
           name           = "http1"
           container_port = 8080
+        }
+
+        env {
+          name  = "NEXT_PUBLIC_API_BASE_URL"
+          value = "https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app"
+        }
+
+        env {
+          name  = "ZITADEL_CLIENT_ID"
+          value = "181236603920908545@cas_fee_adv_qwacker_prod"
+        }
+
+        env {
+          name  = "ZITADEL_ISSUER"
+          value = "https://cas-fee-advanced-ocvdad.zitadel.cloud"
+        }
+
+        env {
+          name  = "NEXTAUTH_SECRET"
+          value = "${random_uuid.random_nextauth_secret.result}"
+        }
+
+        env {
+          name  = "NEXTAUTH_URL"
+          value = "https://thierry-simon-mumble-mu6q4anwpa-oa.a.run.app/"
         }
       }
 
