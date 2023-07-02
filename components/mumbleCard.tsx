@@ -15,10 +15,7 @@ export const MumbleCard = ({ mumble, showUser = true }: Props) => {
   const { data: session } = useSession()
 
   return (
-    <div
-      className={!isReply ? 'mb-s' : 'mb-1'}
-      data-testid={`mumble-${mumble.id}`}
-    >
+    <div className={!isReply ? 'mb-s' : 'mb-1'}>
       <Card
         showProfileImage={isReply || !mumble.user ? false : true}
         roundedBorders={isReply ? false : true}

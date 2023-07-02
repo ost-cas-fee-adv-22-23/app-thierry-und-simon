@@ -39,3 +39,23 @@ test('write mumble', async ({ page }) => {
 })
 
 // Test like a mumble
+test('like mumble', async ({ page }) => {
+  const likeableMumble = page.getByText('Like', { exact: true }).first()
+  await likeableMumble.click()
+  const likedMumble = page.getByTestId(mumbleID as string)
+  await expect(likedMumble).toHaveText('1 Like')
+})
+
+// Test navigate to profil page
+test('navigate to profil page', async ({ page }) => {
+  await page.getByTestId('login-profil').click()
+  await page.waitForURL(/\/profil/)
+  await page.getByTestId('user').isVisible()
+  await expect(page.getByTestId('user')).toContainText('Test Simon-Thierry')
+})
+
+// Test logout
+test('logout', async ({ page }) => {
+  await page.getByTestId('logout').click()
+  await expect(page.getByTestId('logout')).toBeHidden()
+})

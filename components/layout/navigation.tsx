@@ -52,6 +52,7 @@ export const Navigation = () => {
                       callbackUrl: '/'
                     })
                   }}
+                  data-testid="logout"
                 >
                   <NaviButton text="Logout" icon={IconType.logout} />
                 </li>

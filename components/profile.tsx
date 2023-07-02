@@ -9,7 +9,7 @@ import { UserType } from '../types/User'
 
 export default function Profile({ user }: { user: UserType }) {
   return (
-    <div className="mb-8">
+    <div className="mb-8" data-testid="user">
       <div className="w-100 pt-16/9 bg-violet-200 rounded-lg relative mb-l ">
         <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">
           <Image
