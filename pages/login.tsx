@@ -54,6 +54,7 @@ export default function Home() {
                     callbackUrl: '/'
                   })
                 }
+                data-testid="login-button"
               />
             </div>
           )}

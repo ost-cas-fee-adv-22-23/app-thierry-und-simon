@@ -23,6 +23,11 @@ resource "google_project_iam_member" "cloud-runner-svc" {
   project = data.google_project.project.id
 }
 
+variable "commit_hash" {
+  type        = string
+  description = "value of the commit hash of the Docker image to deploy"
+}
+
 output "cloud-runner-email" {
   value = google_service_account.cloud-runner.email
 }

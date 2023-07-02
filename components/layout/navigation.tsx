@@ -29,7 +29,7 @@ export const Navigation = () => {
           <ul className="flex items-center gap-6">
             {session && (
               <>
-                <li>
+                <li data-testid="login-profil">
                   <Link href={`profile/${session.user.id}`}>
                     <div className="rounded-full bg-purple-700 h-10 w-10 overflow-hidden">
                       {session?.user?.avatarUrl && (
@@ -52,6 +52,7 @@ export const Navigation = () => {
                       callbackUrl: '/'
                     })
                   }}
+                  data-testid="logout"
                 >
                   <NaviButton text="Logout" icon={IconType.logout} />
                 </li>

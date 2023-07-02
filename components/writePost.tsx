@@ -150,7 +150,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
   }
 
   return (
-    <div className={isReply ? 'mb-1' : 'mb-s'}>
+    <div className={isReply ? 'mb-1' : 'mb-s'} data-test-id="mumbles-write">
       <Card
         showProfileImage={isReply ? false : true}
         roundedBorders={isReply ? false : true}
@@ -181,6 +181,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
             dispatch({ type: 'change_text', inputText: e.target.value })
           }}
           value={state.text}
+          data-test-id="mumbles-write-textarea"
         ></Textarea>
 
         {state.file && <p className="pb-s">Selected File: {state.file.name}</p>}
@@ -207,6 +208,7 @@ export const WritePost: FC<WriteMumbleProps> = ({
             color={ButtonColor.violet}
             label={'Absenden'}
             onClick={() => handleSubmit()}
+            data-testid="mumbles-write-submit"
           >
             <span className="ml-xs">
               <Icon type={IconType.send} />
