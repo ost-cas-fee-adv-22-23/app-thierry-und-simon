@@ -59,15 +59,6 @@ export default function PageHome({ fallback }: { fallback: MumbleType[] }) {
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const token = await getToken({ req })
 
-  if (!token) {
-    return {
-      redirect: {
-        destination: '/mk-timeline',
-        permanent: false
-      }
-    }
-  }
-
   const initialMumbles = await fetchMumblesWithUser({
     accessToken: token?.accessToken,
     offset: 0,

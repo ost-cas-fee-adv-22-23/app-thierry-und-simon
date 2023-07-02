@@ -33,6 +33,7 @@ jobs:
           docker build \
             --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA" \
             --build-arg NPM_TOKEN='${{ secrets.NPM_TOKEN }}' \
+            --platform linux/amd64 \
             .
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
