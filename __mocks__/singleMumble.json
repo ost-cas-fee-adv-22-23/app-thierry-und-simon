@@ -1,0 +1,19 @@
+{
+  "id": "01H4B63QTD4W6V427YKSVABDM2",
+  "creator": "221111051708530945",
+  "text": "E2E Test Thierry-Simon ID: 23610",
+  "mediaUrl": "",
+  "mediaType": "",
+  "likeCount": 1,
+  "likedByUser": true,
+  "type": "post",
+  "replyCount": 0,
+  "createdTimestamp": 1688297660237,
+  "user": {
+    "id": "221111051708530945",
+    "userName": "test-simon-thierry",
+    "firstName": "Test",
+    "lastName": "Simon-Thierry",
+    "avatarUrl": ""
+  }
+}

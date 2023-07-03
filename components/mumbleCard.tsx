@@ -13,9 +13,9 @@ type Props = {
 export const MumbleCard = ({ mumble, showUser = true }: Props) => {
   const isReply = mumble.type === 'reply'
   const { data: session } = useSession()
-
+  console.log('Mumble', mumble)
   return (
-    <div className={!isReply ? 'mb-s' : 'mb-1'}>
+    <div className={!isReply ? 'mb-s' : 'mb-1'} data-testid="single-mumble">
       <Card
         showProfileImage={isReply || !mumble.user ? false : true}
         roundedBorders={isReply ? false : true}
@@ -45,7 +45,7 @@ export const MumbleCard = ({ mumble, showUser = true }: Props) => {
           )
         }
         <Link href={`/mumble/${mumble.id}`}>
-          <p>{mumble.text}</p>
+          <p data-testid="single-mumble-text">{mumble.text}</p>
           {mumble.mediaUrl && (
             <div className="my-m rounded-lg bg-violet-200 w-100 w-100 pt-16/9 relative">
               <div className="overflow-hidden absolute w-full h-full top-0 bottom-0  rounded-lg">

@@ -38,6 +38,7 @@ export const InteractionButtons = ({ post }: { post: MumbleType }) => {
           count={post.likeCount}
           hasLiked={hasLiked}
           onClick={() => handleLike()}
+          data-testid="like-button"
         />
       </div>
       <div className="ml-xl">

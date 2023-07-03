@@ -12,7 +12,7 @@ export const Cards: FC<CardsProps> = ({
   showUser = true
 }: CardsProps) => {
   return (
-    <div data-testid="mumbles-overview">
+    <div data-testid="mumbles-list">
       {posts?.map((post: MumbleType) => {
         return <MumbleCard showUser={showUser} mumble={post} key={post.id} />
       })}
