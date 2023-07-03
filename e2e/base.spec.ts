@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
 // Check if Mumbles are loaded on home afer login
 test('mumbles loaded', async ({ page }) => {
   await page.getByTestId('mumbles-write').isVisible()
-  await expect(page.getByTestId('mumbles-overview')).toBeVisible()
+  await expect(page.getByTestId('mumbles-list')).toBeVisible()
 })
 
 // Test write mumble
