@@ -59,20 +59,20 @@ Die Dokumentation der Qwaker-REST Api ist [hier](https://qwacker-api-http-prod-4
 Um eine Instanz der App lokal mittels Docker zu erstellen, sind folgende Schritte nötig:
 
 1. Docker Image erstellen `docker build . --build-arg NPM_TOKEN=[TOKEN] -t mumble-image`
-2. Docker Image starten ```docker run -p 3000:3000 --env-file .env mumble-image````
+2. Docker Image starten `docker run -p 3000:3000 --env-file .env mumble-image`
 
 Um das Docker Image mittels Google CLoud Run zu deployen muss das Image erstellt und in die Artifact Registry gepushed werden:
 
-1. Docker Image erstellen ```docker build -t europe-west6-docker.pkg.dev/casfee-adv-mumble/mumble-thierry-simon/mumble-image . --build-arg NPM_TOKEN={NPM_TOKEN}````
-2. Docker Image pushen ```docker push [build name]
+1. Docker Image erstellen `docker build -t europe-west6-docker.pkg.dev/casfee-adv-mumble/mumble-thierry-simon/mumble-image . --build-arg NPM_TOKEN={NPM_TOKEN}`
+2. Docker Image pushen `docker push [build name]`
 
 ### Testing
 
 Es gibt zwei Arten von Tests: E2E Tests mit Playwright und Unit Tests mit Jest und React Testing Library.
 Um die Test auszuführen sind folgende Befehle nötig:
 
-E2E: `npm run test:e2e`
-Unit: `npm run test`
+- E2E: `npm run test:e2e`
+- Unit: `npm run test`
 
 ### Github Actions
 
@@ -88,3 +88,7 @@ Die App ist unter folgenden beiden URLs verfügbar:
 
 Vercel: app-thierry-und-simon.vercel.app
 GCR: https://mumble-image-mu6q4anwpa-oa.a.run.app
+
+### Known Issues
+
+- Terraform Deploy hat ein Cloud Run Permission Issue und kann daher nicht direkt deployen
