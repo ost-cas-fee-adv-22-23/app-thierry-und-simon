@@ -4,19 +4,6 @@ resource "google_service_account" "github-actions-service-account" {
   description  = "Account to deploy applications to google cloud run."
 }
 
-resource "google_project_iam_member" "github-actions-service-account" {
-  for_each = toset([
-    "roles/run.serviceAgent",
-    "roles/viewer",
-    "roles/storage.objectViewer",
-    "roles/run.admin",
-    "roles/cloudsql.client"
-  ])
-  role    = each.key
-  member  = "serviceAccount:${google_service_account.github-actions-service-account.email}"
-  project = data.google_project.project.id
-}
-
 resource "google_project_iam_member" "github-actions-service-account-svc" {
   role    = "roles/run.serviceAgent"
   member  = "serviceAccount:service-${data.google_project.project.number}@serverless-robot-prod.iam.gserviceaccount.com"
