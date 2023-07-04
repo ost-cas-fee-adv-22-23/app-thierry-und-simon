@@ -91,4 +91,6 @@ GCR: https://mumble-image-mu6q4anwpa-oa.a.run.app
 
 ### Known Issues
 
-- Terraform Deploy hat ein Cloud Run Permission Issue und kann daher nicht direkt deployen
+Terraform Deploy hat ein Cloud Run Permission Issue und kann daher nicht direkt deployen => daher zwei Deploy-Pipelines erstellt, eine mit Terraform, welche nicht Teil des Main-Workflows ist und eine ohne. `terraform apply` ausserhalb der GitHub Action geht.
+
+Ich vermute, dass die Berechtigungen des `cloud-runner` Users manuell geändert wurden und nun nicht mehr mit den übrigen Berechtigungen zusammenpassen. Eine Lösung wäre ev, ein neues Projekt aufzusetzen und neue User und Berechtiungen zu vergeben.
