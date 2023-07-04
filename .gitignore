@@ -9,6 +9,7 @@
 /coverage
 /test-results
 /playwright-report
+/playwright/.auth
 
 # next.js
 /.next/
@@ -47,4 +48,3 @@ next-env.d.ts
 
 # Terraform
 /terraform/.terraform
-
