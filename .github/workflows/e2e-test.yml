@@ -20,7 +20,11 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         env:
+          NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
+          ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
         run: npx playwright test
       - uses: actions/upload-artifact@v3
         if: always()
