@@ -25,6 +25,8 @@ jobs:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
           ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
+          ZITADEL_USERNAME: ${{ secrets.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ secrets.ZITADEL_PASSWORD }}
         run: npm run test:e2e
       - uses: actions/upload-artifact@v3
         if: always()
