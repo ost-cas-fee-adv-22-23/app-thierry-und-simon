@@ -75,5 +75,7 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve imageTag=${{ github.sha }}
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_commit_hash: ${{ github.sha }}
         working-directory: terraform
