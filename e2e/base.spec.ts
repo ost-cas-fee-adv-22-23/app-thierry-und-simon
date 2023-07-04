@@ -26,10 +26,14 @@ test.describe('E2E Mumble', () => {
   // Test like a mumble
   test('like mumble', async ({ page }) => {
     await page.goto('/')
+    const mumbleContent = `E2E Test Thierry-Simon ID: ${Math.round(
+      Math.random() * 100000
+    )} - Like Test`
+    await page.getByPlaceholder('Deine Meinung zählt!').fill(mumbleContent)
+    await page.getByTestId('mumbles-write-submit').click()
     const likeableMumble = page.getByText('Like', { exact: true }).first()
     await likeableMumble.click()
-    /*const likedMumble = page.getByTestId(mumbleID as string)*/
-    await expect(likeableMumble).toHaveText('Like')
+    await expect(page.getByTestId('like-button').first()).toHaveText('1 Like')
   })
 
   // Test navigate to profil page
