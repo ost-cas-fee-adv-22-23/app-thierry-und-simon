@@ -25,7 +25,7 @@ jobs:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
           ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
-        run: npx playwright test
+        run: npm run test:e2e
       - uses: actions/upload-artifact@v3
         if: always()
         with:
