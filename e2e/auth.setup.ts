@@ -10,12 +10,12 @@ setup('authenticate', async ({ page }) => {
   await page.getByTestId('login-button').click()
 
   const usernameField = page.getByLabel('Loginname')
-  await usernameField.fill(process.env.USERNAME || '')
+  await usernameField.fill(process.env.ZITADEL_USERNAME as string)
 
   await page.click('#submit-button')
 
   const userPassword = page.getByLabel('Password')
-  await userPassword.fill(process.env.PASSWORD || '')
+  await userPassword.fill(process.env.ZITADEL_PASSWORD as string)
 
   await page.click('#submit-button')
 
