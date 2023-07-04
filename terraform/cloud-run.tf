@@ -1,28 +1,3 @@
-resource "google_service_account" "mumble-image-runner" {
-  account_id   = "mumble-image-runner"
-  display_name = "Google Cloud Run Mumble Thierry Simon"
-  description  = "Account to deploy applications to google cloud run."
-}
-
-resource "google_project_iam_member" "mumble-image-runner" {
-  for_each = toset([
-    "roles/run.serviceAgent",
-    "roles/viewer",
-    "roles/storage.objectViewer",
-    "roles/run.admin",
-    "roles/cloudsql.client"
-  ])
-  role    = each.key
-  member  = "serviceAccount:${google_service_account.mumble-image-runner.email}"
-  project = data.google_project.project.id
-}
-
-resource "google_project_iam_member" "mumble-image-runner-svc" {
-  role    = "roles/run.serviceAgent"
-  member  = "serviceAccount:service-${data.google_project.project.number}@serverless-robot-prod.iam.gserviceaccount.com"
-  project = data.google_project.project.id
-}
-
 variable "commit_hash" {
   type        = string
   description = "value of the commit hash of the Docker image to deploy"
