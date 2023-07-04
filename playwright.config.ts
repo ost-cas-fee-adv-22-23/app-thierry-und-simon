@@ -41,5 +41,11 @@ export default defineConfig({
       },
       dependencies: ['setup']
     }
-  ]
+  ],
+  webServer: {
+    command: 'npm run build && npm start',
+    url: 'http://localhost:3000/',
+    timeout: 120000,
+    reuseExistingServer: true
+  }
 })
