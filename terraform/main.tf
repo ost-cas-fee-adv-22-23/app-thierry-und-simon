@@ -1,5 +1,5 @@
 locals {
-  name       = "thierry-simon-mumble"
+  name       = "mumble-image"
   gcp_region = "europe-west6"
 }
 

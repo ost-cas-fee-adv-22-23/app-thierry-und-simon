@@ -1,10 +1,23 @@
-resource "google_service_account" "github-actions-service-account" {
-  account_id   = "github-actions-service-account"
+resource "google_service_account" "cloud-runner" {
+  account_id   = "cloud-runner"
   display_name = "Google Cloud Run Mumble Thierry Simon"
   description  = "Account to deploy applications to google cloud run."
 }
 
-resource "google_project_iam_member" "github-actions-service-account-svc" {
+resource "google_project_iam_member" "cloud-runner" {
+  for_each = toset([
+    "roles/run.serviceAgent",
+    "roles/viewer",
+    "roles/storage.objectViewer",
+    "roles/run.admin",
+    "roles/cloudsql.client"
+  ])
+  role    = each.key
+  member  = "serviceAccount:${google_service_account.cloud-runner.email}"
+  project = data.google_project.project.id
+}
+
+resource "google_project_iam_member" "cloud-runner-svc" {
   role    = "roles/run.serviceAgent"
   member  = "serviceAccount:service-${data.google_project.project.number}@serverless-robot-prod.iam.gserviceaccount.com"
   project = data.google_project.project.id
@@ -15,8 +28,8 @@ variable "commit_hash" {
   description = "value of the commit hash of the Docker image to deploy"
 }
 
-output "github-actions-service-account-email" {
-  value = google_service_account.github-actions-service-account.email
+output "cloud-runner-email" {
+  value = google_service_account.cloud-runner.email
 }
 
 resource "random_uuid" "random_nextauth_secret" {
@@ -68,7 +81,7 @@ resource "google_cloud_run_service" "thierry-simon-mumble-app" {
         }
       }
 
-      service_account_name = google_service_account.github-actions-service-account.email
+      service_account_name = google_service_account.cloud-runner.email
     }
   }
 
