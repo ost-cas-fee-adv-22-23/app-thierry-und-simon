@@ -55,8 +55,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:latest
-            $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA
+            europe-west6/casfee-adv-mumble/mumble-thierry-simon/mumble-image:latest
+            europe-west6/casfee-adv-mumble/mumble-thierry-simon/mumble-image:${{ github.sha }}
           build-args: |
             NPM_TOKEN=${{ secrets.NPM_TOKEN }}
             --platform linux/amd64
