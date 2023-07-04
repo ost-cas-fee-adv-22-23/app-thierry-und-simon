@@ -1,9 +1,3 @@
-resource "google_project_iam_member" "cloud-runner-svc" {
-  role    = "roles/run.serviceAgent"
-  member  = "serviceAccount:service-${data.google_project.project.number}@serverless-robot-prod.iam.gserviceaccount.com"
-  project = data.google_project.project.id
-}
-
 variable "commit_hash" {
   type        = string
   description = "value of the commit hash of the Docker image to deploy"
