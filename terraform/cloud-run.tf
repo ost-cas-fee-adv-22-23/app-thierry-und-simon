@@ -1,10 +1,10 @@
-resource "google_service_account" "cloud-runner" {
-  account_id   = "cloud-runner"
+resource "google_service_account" "mumble-image-runner" {
+  account_id   = "mumble-image-runner"
   display_name = "Google Cloud Run Mumble Thierry Simon"
   description  = "Account to deploy applications to google cloud run."
 }
 
-resource "google_project_iam_member" "cloud-runner" {
+resource "google_project_iam_member" "mumble-image-runner" {
   for_each = toset([
     "roles/run.serviceAgent",
     "roles/viewer",
@@ -13,11 +13,11 @@ resource "google_project_iam_member" "cloud-runner" {
     "roles/cloudsql.client"
   ])
   role    = each.key
-  member  = "serviceAccount:${google_service_account.cloud-runner.email}"
+  member  = "serviceAccount:${google_service_account.mumble-image-runner.email}"
   project = data.google_project.project.id
 }
 
-resource "google_project_iam_member" "cloud-runner-svc" {
+resource "google_project_iam_member" "mumble-image-runner-svc" {
   role    = "roles/run.serviceAgent"
   member  = "serviceAccount:service-${data.google_project.project.number}@serverless-robot-prod.iam.gserviceaccount.com"
   project = data.google_project.project.id
@@ -27,15 +27,10 @@ variable "commit_hash" {
   type        = string
   description = "value of the commit hash of the Docker image to deploy"
 }
-
-output "cloud-runner-email" {
-  value = google_service_account.cloud-runner.email
-}
-
 resource "random_uuid" "random_nextauth_secret" {
 }
 
-resource "google_cloud_run_service" "thierry-simon-mumble-app" {
+resource "google_cloud_run_service" "thierry-simon-mumble" {
   name                       = local.name
   location                   = local.gcp_region
   autogenerate_revision_name = true
@@ -44,15 +39,10 @@ resource "google_cloud_run_service" "thierry-simon-mumble-app" {
     spec {
       containers {
         image = "europe-west6-docker.pkg.dev/casfee-adv-mumble/mumble-thierry-simon/mumble-image:${var.commit_hash}"
-        resources {
-          limits = {
-            "memory" = "256Mi"
-          }
-        }
 
         ports {
           name           = "http1"
-          container_port = 8080
+          container_port = 3000
         }
 
         env {
@@ -81,7 +71,7 @@ resource "google_cloud_run_service" "thierry-simon-mumble-app" {
         }
       }
 
-      service_account_name = google_service_account.cloud-runner.email
+      service_account_name = "mumble-image-runner"
     }
   }
 
@@ -92,7 +82,7 @@ resource "google_cloud_run_service" "thierry-simon-mumble-app" {
 }
 
 output "cloud-run-url" {
-  value = google_cloud_run_service.thierry-simon-mumble-app.status[0].url
+  value = google_cloud_run_service.thierry-simon-mumble.status[0].url
 }
 
 data "google_iam_policy" "noauth" {
@@ -105,9 +95,9 @@ data "google_iam_policy" "noauth" {
 }
 
 resource "google_cloud_run_service_iam_policy" "noauth" {
-  location = google_cloud_run_service.thierry-simon-mumble-app.location
-  project  = google_cloud_run_service.thierry-simon-mumble-app.project
-  service  = google_cloud_run_service.thierry-simon-mumble-app.name
+  location = google_cloud_run_service.thierry-simon-mumble.location
+  project  = google_cloud_run_service.thierry-simon-mumble.project
+  service  = google_cloud_run_service.thierry-simon-mumble.name
 
   policy_data = data.google_iam_policy.noauth.policy_data
 }
